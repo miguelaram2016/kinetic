@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  profile      UserProfile?
+  equipment    UserEquipment[]
+  workouts     Workout[]
+  checkIns     CheckIn[]
+  aiPersona    AIPersona?
+}
+
+model UserProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weight          Float?
+  height          Float?
+  age             Int?
+  gender          String?
+  goals           String?
+  experienceLevel String?
+}
+
+model UserEquipment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  equipment String
+
+  @@index([userId])
+}
+
+model Exercise {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  description   String?
+  muscleGroups  String   // JSON array stored as string
+  equipment     String   // JSON array stored as string
+  difficulty    String
+
+  workoutExercises WorkoutExercise[]
+}
+
+model Workout {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime
+  status    String   @default("planned") // planned, active, completed
+  type      String   // strength, cardio, hiit, etc.
+
+  exercises WorkoutExercise[]
+
+  @@index([userId])
+}
+
+model WorkoutExercise {
+  id         String  @id @default(uuid())
+  workoutId  String
+  workout    Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  order      Int
+  sets       Int
+  reps       Int
+  weight     Float?
+
+  @@index([workoutId])
+  @@index([exerciseId])
+}
+
+model CheckIn {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime
+  energy    Int?     // 1-10 scale
+  sleep     Float?   // hours
+  stress    Int?     // 1-10 scale
+  nutrition Int?     // 1-10 scale
+  soreness  Int?     // 1-10 scale
+  notes     String?
+
+  @@index([userId])
+}
+
+model AIPersona {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  tone      String   // motivational, calm, direct, etc.
+  verbosity String   // brief, moderate, detailed
+  focus     String?  // recovery, strength, weightloss, etc.
+}
