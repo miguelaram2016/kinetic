@@ -28,8 +28,13 @@ model UserProfile {
   height          Float?
   age             Int?
   gender          String?
-  goals           String?
+  goals           String?  // JSON array stored as string
   experienceLevel String?
+  bodyCompositionGoal String? // maintain, bulk, cut, recomp
+  daysPerWeek     Int?     // 2-6
+  splitPreference String?  // full_body, upper_lower, ppl, body_part
+  injuries        String?  // JSON array stored as string
+  dietaryHabits   String?  // tracking, mindful, struggling, not_tracking
 }
 
 model UserEquipment {
@@ -56,9 +61,12 @@ model Workout {
   id        String   @id @default(uuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String?  // e.g., "Push Day", "Leg Day"
   date      DateTime
-  status    String   @default("planned") // planned, active, completed
+  status    String   @default("planned") // planned, active, completed, incomplete
   type      String   // strength, cardio, hiit, etc.
+  source    String   @default("user") // user or ai
+  notes     String?  // user notes after completion
 
   exercises WorkoutExercise[]
 
@@ -73,8 +81,10 @@ model WorkoutExercise {
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
   order      Int
   sets       Int
-  reps       Int
+  reps       String  // can be "8-12" or "AMRAP"
   weight     Float?
+  rest       Int?    // rest in seconds
+  notes      String?  // form cues, notes
 
   @@index([workoutId])
   @@index([exerciseId])
