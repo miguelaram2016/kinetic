@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   name      String
   createdAt DateTime @default(now())
@@ -21,96 +21,87 @@ model User {
 }
 
 model UserProfile {
-  id              String   @id @default(uuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   userId          String   @unique
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   weight          Float?
   height          Float?
   age             Int?
   gender          String?
-  goals           String?  // JSON array stored as string
+  goals           String[]
   experienceLevel String?
-  bodyCompositionGoal String? // maintain, bulk, cut, recomp
-  daysPerWeek     Int?     // 2-6
-  splitPreference String?  // full_body, upper_lower, ppl, body_part
-  injuries        String?  // JSON array stored as string
-  dietaryHabits   String?  // tracking, mindful, struggling, not_tracking
+  bodyCompositionGoal String?
+  daysPerWeek     Int?
+  splitPreference String?
+  injuries        String[]
+  dietaryHabits   String?
 }
 
 model UserEquipment {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   equipment String
-
-  @@index([userId])
 }
 
 model Exercise {
-  id            String   @id @default(uuid())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String   @unique
   description   String?
-  muscleGroups  String   // JSON array stored as string
-  equipment     String   // JSON array stored as string
+  muscleGroups  String[]
+  equipment     String[]
   difficulty    String
 
   workoutExercises WorkoutExercise[]
 }
 
 model Workout {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String?  // e.g., "Push Day", "Leg Day"
+  name      String?
   date      DateTime
-  status    String   @default("planned") // planned, active, completed, incomplete
-  type      String   // strength, cardio, hiit, etc.
-  source    String   @default("user") // user or ai
-  notes     String?  // user notes after completion
+  status    String   @default("planned")
+  type      String
+  source    String   @default("user")
+  notes     String?
 
   exercises WorkoutExercise[]
-
-  @@index([userId])
 }
 
 model WorkoutExercise {
-  id         String  @id @default(uuid())
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
   workoutId  String
   workout    Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   exerciseId String
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
   order      Int
   sets       Int
-  reps       String  // can be "8-12" or "AMRAP"
+  reps       String
   weight     Float?
-  rest       Int?    // rest in seconds
-  notes      String?  // form cues, notes
-
-  @@index([workoutId])
-  @@index([exerciseId])
+  rest       Int?
+  notes      String?
 }
 
 model CheckIn {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      DateTime
-  energy    Int?     // 1-10 scale
-  sleep     Float?   // hours
-  stress    Int?     // 1-10 scale
-  nutrition Int?     // 1-10 scale
-  soreness  Int?     // 1-10 scale
+  energy    Int?
+  sleep     Float?
+  stress    Int?
+  nutrition Int?
+  soreness  Int?
   notes     String?
-
-  @@index([userId])
 }
 
 model AIPersona {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
-  tone      String   // motivational, calm, direct, etc.
-  verbosity String   // brief, moderate, detailed
-  focus     String?  // recovery, strength, weightloss, etc.
+  tone      String
+  verbosity String
+  focus     String?
 }
