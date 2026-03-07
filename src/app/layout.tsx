@@ -59,67 +59,75 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
-        <div className="animate-pulse text-primary">Loading...</div>
-      </div>
+      <html lang="en">
+        <body className="bg-dark-900">
+          <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+            <div className="animate-pulse text-primary">Loading...</div>
+          </div>
+        </body>
+      </html>
     );
   }
 
   return (
-    <div className="min-h-screen bg-dark-900 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-dark-800 border-r border-dark-700 flex flex-col">
-        {/* Logo */}
-        <div className="p-6 border-b border-dark-700">
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">K</span>
-            </div>
-            <span className="text-xl font-bold text-white">Kinetic</span>
-          </Link>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.href === '/dashboard' && pathname === '/');
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive
-                    ? 'bg-primary text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-dark-700'
-                }`}
-              >
-                <NavIcon icon={item.icon} className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
+    <html lang="en">
+      <body className="bg-dark-900">
+        <div className="min-h-screen bg-dark-900 flex">
+          {/* Sidebar */}
+          <aside className="w-64 bg-dark-800 border-r border-dark-700 flex flex-col">
+            {/* Logo */}
+            <div className="p-6 border-b border-dark-700">
+              <Link href="/dashboard" className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">K</span>
+                </div>
+                <span className="text-xl font-bold text-white">Kinetic</span>
               </Link>
-            );
-          })}
-        </nav>
-
-        {/* User section */}
-        <div className="p-4 border-t border-dark-700">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center">
-              <span className="text-gray-400">👤</span>
             </div>
-            <div>
-              <p className="text-white font-medium text-sm">Guest User</p>
-              <p className="text-gray-500 text-xs">Free Plan</p>
-            </div>
-          </div>
-        </div>
-      </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
-          {children}
+            {/* Navigation */}
+            <nav className="flex-1 p-4 space-y-2">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href || (item.href === '/dashboard' && pathname === '/');
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                      isActive
+                        ? 'bg-primary text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-dark-700'
+                    }`}
+                  >
+                    <NavIcon icon={item.icon} className="w-5 h-5" />
+                    <span className="font-medium">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* User section */}
+            <div className="p-4 border-t border-dark-700">
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center">
+                  <span className="text-gray-400">👤</span>
+                </div>
+                <div>
+                  <p className="text-white font-medium text-sm">Guest User</p>
+                  <p className="text-gray-500 text-xs">Free Plan</p>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 overflow-auto">
+            <div className="p-8">
+              {children}
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      </body>
+    </html>
   );
 }
