@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'home' },
+  { href: '/', label: 'Dashboard', icon: 'home' },
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
   { href: '/weight', label: 'Weight', icon: 'scale' },
   { href: '/food', label: 'Food Log', icon: 'food' },
@@ -77,7 +77,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <aside className="w-64 bg-dark-800 border-r border-dark-700 flex flex-col">
             {/* Logo */}
             <div className="p-6 border-b border-dark-700">
-              <Link href="/dashboard" className="flex items-center gap-3">
+              <Link href="/" className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">K</span>
                 </div>
@@ -88,7 +88,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-2">
               {navItems.map((item) => {
-                const isActive = pathname === item.href || (item.href === '/dashboard' && pathname === '/');
+                const isActive = pathname === item.href || (item.href === '/' && pathname === '/');
                 return (
                   <Link
                     key={item.href}
