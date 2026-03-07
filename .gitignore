@@ -40,3 +40,4 @@ backend/.prisma/
 # Turborepo
 .turbo/
 backend/.env
+.vercel
