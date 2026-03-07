@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import './globals.css';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: 'home' },
