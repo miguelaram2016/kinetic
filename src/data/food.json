@@ -1,0 +1,97 @@
+{
+  "entries": [
+    {
+      "id": "food_1",
+      "userId": "user_1",
+      "date": "2024-03-06",
+      "meals": [
+        {
+          "name": "Breakfast",
+          "time": "07:30",
+          "items": [
+            {
+              "name": "Oatmeal with protein powder",
+              "calories": 350,
+              "protein": 25,
+              "carbs": 45,
+              "fats": 6
+            },
+            {
+              "name": "Banana",
+              "calories": 105,
+              "protein": 1,
+              "carbs": 27,
+              "fats": 0
+            }
+          ]
+        },
+        {
+          "name": "Lunch",
+          "time": "12:30",
+          "items": [
+            {
+              "name": "Chicken breast",
+              "calories": 280,
+              "protein": 52,
+              "carbs": 0,
+              "fats": 6
+            },
+            {
+              "name": "Rice",
+              "calories": 200,
+              "protein": 4,
+              "carbs": 44,
+              "fats": 0
+            },
+            {
+              "name": "Broccoli",
+              "calories": 55,
+              "protein": 4,
+              "carbs": 11,
+              "fats": 0
+            }
+          ]
+        },
+        {
+          "name": "Pre-workout",
+          "time": "17:00",
+          "items": [
+            {
+              "name": "Greek yogurt",
+              "calories": 150,
+              "protein": 15,
+              "carbs": 12,
+              "fats": 5
+            }
+          ]
+        },
+        {
+          "name": "Dinner",
+          "time": "20:00",
+          "items": [
+            {
+              "name": "Salmon fillet",
+              "calories": 350,
+              "protein": 40,
+              "carbs": 0,
+              "fats": 18
+            },
+            {
+              "name": "Sweet potato",
+              "calories": 180,
+              "protein": 4,
+              "carbs": 41,
+              "fats": 0
+            }
+          ]
+        }
+      ],
+      "totals": {
+        "calories": 1670,
+        "protein": 145,
+        "carbs": 180,
+        "fats": 35
+      }
+    }
+  ]
+}

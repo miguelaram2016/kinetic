@@ -42,9 +42,9 @@ export default function WeightPage() {
   const range = maxWeight - minWeight || 1;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Weight Tracking</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">Weight Tracking</h1>
         <p className="text-gray-400 mt-1">Log and track your body weight over time</p>
       </div>
 

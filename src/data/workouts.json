@@ -1,0 +1,143 @@
+{
+  "workouts": [
+    {
+      "id": "wo_1",
+      "userId": "user_1",
+      "name": "Push Day",
+      "type": "push",
+      "date": "2024-03-04",
+      "status": "completed",
+      "source": "user",
+      "exercises": [
+        {
+          "id": "we_1",
+          "exerciseId": "ex_1",
+          "order": 1,
+          "sets": 4,
+          "reps": "8-10",
+          "weight": 135,
+          "rest": 90,
+          "notes": ""
+        },
+        {
+          "id": "we_2",
+          "exerciseId": "ex_11",
+          "order": 2,
+          "sets": 3,
+          "reps": "10-12",
+          "weight": 50,
+          "rest": 90,
+          "notes": ""
+        },
+        {
+          "id": "we_3",
+          "exerciseId": "ex_4",
+          "order": 3,
+          "sets": 3,
+          "reps": "8-10",
+          "weight": 85,
+          "rest": 90,
+          "notes": ""
+        },
+        {
+          "id": "we_4",
+          "exerciseId": "ex_8",
+          "order": 4,
+          "sets": 3,
+          "reps": "12-15",
+          "weight": 40,
+          "rest": 60,
+          "notes": ""
+        }
+      ],
+      "completedAt": "2024-03-04T18:30:00.000Z",
+      "duration": 60
+    },
+    {
+      "id": "wo_2",
+      "userId": "user_1",
+      "name": "Pull Day",
+      "type": "pull",
+      "date": "2024-03-05",
+      "status": "completed",
+      "source": "user",
+      "exercises": [
+        {
+          "id": "we_5",
+          "exerciseId": "ex_5",
+          "order": 1,
+          "sets": 4,
+          "reps": "6-8",
+          "weight": null,
+          "rest": 120,
+          "notes": "Bodyweight"
+        },
+        {
+          "id": "we_6",
+          "exerciseId": "ex_6",
+          "order": 2,
+          "sets": 4,
+          "reps": "8-10",
+          "weight": 95,
+          "rest": 90,
+          "notes": ""
+        },
+        {
+          "id": "we_7",
+          "exerciseId": "ex_7",
+          "order": 3,
+          "sets": 3,
+          "reps": "10-12",
+          "weight": 20,
+          "rest": 60,
+          "notes": ""
+        }
+      ],
+      "completedAt": "2024-03-05T19:00:00.000Z",
+      "duration": 55
+    },
+    {
+      "id": "wo_3",
+      "userId": "user_1",
+      "name": "Leg Day",
+      "type": "legs",
+      "date": "2024-03-06",
+      "status": "planned",
+      "source": "user",
+      "exercises": [
+        {
+          "id": "we_8",
+          "exerciseId": "ex_2",
+          "order": 1,
+          "sets": 4,
+          "reps": "6-8",
+          "weight": 185,
+          "rest": 120,
+          "notes": ""
+        },
+        {
+          "id": "we_9",
+          "exerciseId": "ex_12",
+          "order": 2,
+          "sets": 3,
+          "reps": "8-10",
+          "weight": 135,
+          "rest": 90,
+          "notes": ""
+        },
+        {
+          "id": "we_10",
+          "exerciseId": "ex_9",
+          "order": 3,
+          "sets": 3,
+          "reps": "10-12",
+          "weight": 270,
+          "rest": 90,
+          "notes": ""
+        }
+      ],
+      "completedAt": null,
+      "duration": null
+    }
+  ]
+}

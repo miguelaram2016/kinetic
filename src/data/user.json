@@ -1,0 +1,24 @@
+{
+  "user": {
+    "id": "user_1",
+    "name": "Miguel",
+    "email": "miguel@example.com",
+    "goals": [
+      "Build muscle",
+      "Improve strength",
+      "Maintain cardiovascular health"
+    ],
+    "experienceLevel": "intermediate",
+    "daysPerWeek": 4,
+    "splitPreference": "push/pull/legs",
+    "injuries": [],
+    "preferences": {
+      "units": "imperial",
+      "restTimer": 90,
+      "defaultSets": 3,
+      "defaultReps": "8-12"
+    },
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+}

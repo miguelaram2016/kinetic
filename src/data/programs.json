@@ -1,0 +1,27 @@
+{
+  "programs": [
+    {
+      "id": "prog_1",
+      "userId": "user_1",
+      "name": "Push Pull Legs",
+      "description": "Classic PPL split routine",
+      "phases": [
+        {
+          "name": "Hypertrophy",
+          "durationWeeks": 8,
+          "workouts": ["wo_1", "wo_2"],
+          "notes": "Focus on volume and muscle building"
+        },
+        {
+          "name": "Strength",
+          "durationWeeks": 4,
+          "workouts": ["wo_1", "wo_2"],
+          "notes": "Lower reps, higher weight"
+        }
+      ],
+      "currentPhase": 0,
+      "startedAt": "2024-01-15T00:00:00.000Z",
+      "active": true
+    }
+  ]
+}

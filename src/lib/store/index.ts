@@ -161,7 +161,7 @@ export function usePrograms() {
 
   const addProgram = useCallback((program: Omit<TrainingProgram, 'id' | 'startedAt'>) => {
     const newProgram: TrainingProgram = { 
-      ...program, 
+      ...program,
       id: generateId(), 
       startedAt: new Date().toISOString() 
     };

@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useWorkouts } from '@/lib/store';
 import { Exercise, generateId } from '@/lib/types';
+import ExerciseSelector from '@/components/ExerciseSelector';
+import { Exercise as RichExercise } from '@/lib/exercise-types';
+import { getAllExercises } from '@/lib/exercise-utils';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -65,6 +68,10 @@ export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showExerciseSelector, setShowExerciseSelector] = useState(false);
+  const [customMode, setCustomMode] = useState(false);
+  const [customExercises, setCustomExercises] = useState<Exercise[]>([]);
+  const [customWorkoutName, setCustomWorkoutName] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -120,6 +127,56 @@ export default function CalendarPage() {
     });
     setShowAddModal(false);
     setSelectedDate(null);
+  };
+
+  // Custom workout handlers
+  const handleAddCustomExercise = (exercise: RichExercise) => {
+    // Get suggested sets/reps based on difficulty
+    const defaultSets = exercise.difficulty === 'beginner' ? 3 : exercise.difficulty === 'intermediate' ? 4 : 5;
+    const defaultReps = exercise.movementPattern.includes('squat') || exercise.movementPattern.includes('hinge') ? 8 : 10;
+    const defaultWeight = exercise.equipment.includes('bodyweight') ? 0 : 45;
+
+    const newExercise: Exercise = {
+      id: generateId(),
+      name: exercise.name,
+      exerciseRef: exercise.id,
+      sets: Array.from({ length: defaultSets }, () => ({
+        id: generateId(),
+        reps: defaultReps,
+        weight: defaultWeight,
+        completed: false,
+      })),
+    };
+    setCustomExercises([...customExercises, newExercise]);
+  };
+
+  const handleRemoveCustomExercise = (id: string) => {
+    setCustomExercises(customExercises.filter(e => e.id !== id));
+  };
+
+  const handleSaveCustomWorkout = () => {
+    if (!selectedDate || customExercises.length === 0) return;
+
+    addWorkout({
+      name: customWorkoutName || 'Custom Workout',
+      scheduledDate: selectedDate,
+      exercises: customExercises,
+      completed: false,
+    });
+
+    // Reset custom workout state
+    setCustomExercises([]);
+    setCustomWorkoutName('');
+    setCustomMode(false);
+    setShowAddModal(false);
+    setSelectedDate(null);
+  };
+
+  const startCustomWorkout = () => {
+    setCustomMode(true);
+    setCustomExercises([]);
+    setCustomWorkoutName('Custom Workout');
+    setShowAddModal(false);
   };
 
   const renderCalendarDays = () => {
@@ -307,7 +364,7 @@ export default function CalendarPage() {
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-800 rounded-2xl border border-dark-700 p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-white">Add Workout</h3>
@@ -350,9 +407,120 @@ export default function CalendarPage() {
                   </div>
                 </button>
               ))}
+              
+              {/* Custom Workout Option */}
+              <button
+                onClick={startCustomWorkout}
+                className="w-full p-4 bg-dark-700 hover:bg-dark-600 rounded-xl text-left transition-colors border border-dashed border-primary/50"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-primary font-medium">Create Custom Workout</h4>
+                    <p className="text-gray-500 text-sm">
+                      Build your own from {getAllExercises().length}+ exercises
+                    </p>
+                  </div>
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Custom Workout Modal */}
+      {customMode && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-800 rounded-2xl border border-dark-700 p-6 w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Create Custom Workout</h3>
+                <p className="text-gray-500 text-sm">
+                  {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
+              <button
+                onClick={() => { setCustomMode(false); setCustomExercises([]); }}
+                className="p-2 hover:bg-dark-700 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Workout Name */}
+            <div className="mb-4">
+              <label className="text-sm text-gray-400 block mb-1">Workout Name</label>
+              <input
+                type="text"
+                value={customWorkoutName}
+                onChange={(e) => setCustomWorkoutName(e.target.value)}
+                placeholder="My Custom Workout"
+                className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+
+            {/* Exercise List */}
+            <div className="flex-1 overflow-y-auto mb-4 space-y-2">
+              {customExercises.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="mb-2">No exercises added yet</p>
+                  <p className="text-sm">Click below to add exercises</p>
+                </div>
+              ) : (
+                customExercises.map((ex) => (
+                  <div key={ex.id} className="flex items-center justify-between p-3 bg-dark-700 rounded-lg">
+                    <div>
+                      <div className="text-white font-medium">{ex.name}</div>
+                      <div className="text-gray-500 text-sm">{ex.sets.length} sets</div>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveCustomExercise(ex.id)}
+                      className="text-gray-500 hover:text-red-400"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowExerciseSelector(true)}
+                className="flex-1 bg-primary hover:bg-primary-600 text-white py-2 rounded-lg font-medium transition-colors"
+              >
+                + Add Exercise
+              </button>
+              <button
+                onClick={handleSaveCustomWorkout}
+                disabled={customExercises.length === 0}
+                className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2 rounded-lg font-medium transition-colors"
+              >
+                Save Workout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Exercise Selector */}
+      {showExerciseSelector && (
+        <ExerciseSelector
+          onSelect={(exercise) => {
+            handleAddCustomExercise(exercise);
+            setShowExerciseSelector(false);
+          }}
+          onClose={() => setShowExerciseSelector(false)}
+        />
       )}
     </div>
   );

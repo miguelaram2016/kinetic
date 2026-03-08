@@ -1,3 +1,5 @@
+import { Exercise as RichExercise } from './exercise-types';
+
 // Types for the Kinetic fitness app
 
 export interface Set {
@@ -7,11 +9,17 @@ export interface Set {
   completed: boolean;
 }
 
+// Basic exercise for workouts - can be enhanced with rich data
 export interface Exercise {
   id: string;
   name: string;
   sets: Set[];
+  // Optional: link to rich exercise database for enhanced display
+  exerciseRef?: string; // ID from exercise database
 }
+
+// Extend basic exercise with rich data when needed
+export type ExerciseWithDetails = Exercise & Partial<RichExercise>;
 
 export interface Workout {
   id: string;
@@ -50,6 +58,7 @@ export interface TrainingProgram {
   phases: ProgramPhase[];
   currentPhase: number;
   startedAt: string;
+  isActive?: boolean;
 }
 
 export interface UserStats {

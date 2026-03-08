@@ -1,22 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useWorkouts } from '@/lib/store';
 import { Workout } from '@/lib/types';
+import ExerciseDetail from '@/components/ExerciseDetail';
 
 export default function WorkoutPage() {
   const params = useParams();
   const router = useRouter();
   const { workouts, updateWorkout, completeWorkout } = useWorkouts();
   const [workout, setWorkout] = useState<Workout | null>(null);
-  const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showRestTimer, setShowRestTimer] = useState(false);
   const [restTime, setRestTime] = useState(90);
   const [restRemaining, setRestRemaining] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -28,21 +30,21 @@ export default function WorkoutPage() {
     const found = workouts.find(w => w.id === params.id);
     if (found) {
       setWorkout(found);
-      if (!found.completed) {
-        setStartTime(Date.now());
+      if (!found.completed && !startTimeRef.current) {
+        startTimeRef.current = Date.now();
       }
     }
   }, [mounted, params.id, workouts]);
 
   useEffect(() => {
-    if (!startTime || workout?.completed) return;
+    if (!startTimeRef.current || workout?.completed) return;
     
     const interval = setInterval(() => {
-      setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+      setElapsedTime(Math.floor((Date.now() - startTimeRef.current!) / 1000));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [startTime, workout?.completed]);
+  }, [startTimeRef.current, workout?.completed]);
 
   useEffect(() => {
     if (showRestTimer && restRemaining > 0) {
@@ -90,13 +92,15 @@ export default function WorkoutPage() {
     
     const newExercises = [...workout.exercises];
     const newSets = [...newExercises[exerciseIndex].sets];
-    newSets[setIndex] = { ...newSets[setIndex], completed: !newSets[setIndex].completed };
+    const wasCompleted = newSets[setIndex].completed;
+    newSets[setIndex] = { ...newSets[setIndex], completed: !wasCompleted };
     newExercises[exerciseIndex] = { ...newExercises[exerciseIndex], sets: newSets };
     
     setWorkout({ ...workout, exercises: newExercises });
     updateWorkout(workout.id, { exercises: newExercises });
     
-    if (!newSets[setIndex].completed) {
+    // Start rest timer when completing a set (not when uncompleting)
+    if (!wasCompleted) {
       setRestRemaining(restTime);
       setShowRestTimer(true);
     }
@@ -111,6 +115,7 @@ export default function WorkoutPage() {
     newExercises[exerciseIndex] = { ...newExercises[exerciseIndex], sets: newSets };
     
     setWorkout({ ...workout, exercises: newExercises });
+    updateWorkout(workout.id, { exercises: newExercises });
   };
 
   const handleRepsChange = (exerciseIndex: number, setIndex: number, reps: number) => {
@@ -122,13 +127,15 @@ export default function WorkoutPage() {
     newExercises[exerciseIndex] = { ...newExercises[exerciseIndex], sets: newSets };
     
     setWorkout({ ...workout, exercises: newExercises });
+    updateWorkout(workout.id, { exercises: newExercises });
   };
 
   const handleFinishWorkout = () => {
     if (!workout) return;
     
-    const duration = startTime ? Math.floor((Date.now() - startTime) / 60000) : elapsedTime / 60;
+    const duration = startTimeRef.current ? Math.floor((Date.now() - startTimeRef.current) / 60000) : elapsedTime / 60;
     completeWorkout(workout.id, duration);
+    startTimeRef.current = null;
     router.push('/');
   };
 
@@ -186,7 +193,7 @@ export default function WorkoutPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
         <div>
           <Link href="/calendar" className="text-gray-500 hover:text-gray-400 text-sm mb-1 inline-flex items-center gap-1">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,11 +201,11 @@ export default function WorkoutPage() {
             </svg>
             Calendar
           </Link>
-          <h1 className="text-2xl font-bold text-white">{workout.name}</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-white">{workout.name}</h1>
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right">
           <p className="text-gray-400 text-sm">Duration</p>
-          <p className="text-xl font-bold text-white">{formatTime(elapsedTime)}</p>
+          <p className="text-lg md:text-xl font-bold text-white">{formatTime(elapsedTime)}</p>
         </div>
       </div>
 
@@ -221,14 +228,31 @@ export default function WorkoutPage() {
         {workout.exercises.map((exercise, exerciseIndex) => (
           <div key={exercise.id} className="bg-dark-800 rounded-2xl border border-dark-700 overflow-hidden">
             <div className="p-4 bg-dark-700/50 border-b border-dark-700">
-              <h3 className="text-lg font-semibold text-white">{exercise.name}</h3>
-              <p className="text-gray-500 text-sm">
-                {exercise.sets.filter(s => s.completed).length} / {exercise.sets.length} sets completed
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">{exercise.name}</h3>
+                  <p className="text-gray-500 text-sm">
+                    {exercise.sets.filter(s => s.completed).length} / {exercise.sets.length} sets completed
+                  </p>
+                </div>
+                <button
+                  onClick={() => setExpandedExercise(expandedExercise === exercise.id ? null : exercise.id)}
+                  className="text-primary hover:text-primary-400 text-sm flex items-center gap-1"
+                >
+                  {expandedExercise === exercise.id ? 'Hide' : 'Show'} details
+                </button>
+              </div>
             </div>
+
+            {/* Exercise Details */}
+            {expandedExercise === exercise.id && (
+              <div className="p-4 border-b border-dark-700 bg-dark-800/50">
+                <ExerciseDetail exerciseName={exercise.name} compact />
+              </div>
+            )}
             
             <div className="p-4">
-              <div className="grid grid-cols-5 gap-2 text-sm text-gray-500 mb-2">
+              <div className="hidden md:grid md:grid-cols-5 gap-2 text-sm text-gray-500 mb-2">
                 <div className="text-center">SET</div>
                 <div className="text-center">PREVIOUS</div>
                 <div className="text-center">WEIGHT</div>
@@ -240,51 +264,97 @@ export default function WorkoutPage() {
                 {exercise.sets.map((set, setIndex) => (
                   <div
                     key={set.id}
-                    className={`grid grid-cols-5 gap-2 items-center p-3 rounded-xl transition-colors ${
-                      set.completed ? 'bg-green-500/10' : 'bg-dark-700/30'
-                    }`}
+                    className={`${set.completed ? 'bg-green-500/10' : 'bg-dark-700/30'} rounded-xl p-3 transition-colors`}
                   >
-                    <div className="text-center">
+                    {/* Mobile layout */}
+                    <div className="flex items-center justify-between mb-2 md:hidden">
                       <span className={`text-sm font-medium ${set.completed ? 'text-green-400' : 'text-gray-400'}`}>
-                        {setIndex + 1}
+                        Set {setIndex + 1}
                       </span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-gray-500 text-sm">--</span>
-                    </div>
-                    <div>
-                      <input
-                        type="number"
-                        value={set.weight}
-                        onChange={(e) => handleWeightChange(exerciseIndex, setIndex, parseFloat(e.target.value) || 0)}
-                        className="w-full bg-dark-700 border border-dark-600 rounded-lg px-2 py-2 text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        type="number"
-                        value={set.reps}
-                        onChange={(e) => handleRepsChange(exerciseIndex, setIndex, parseInt(e.target.value) || 0)}
-                        className="w-full bg-dark-700 border border-dark-600 rounded-lg px-2 py-2 text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                    </div>
-                    <div className="flex justify-center">
                       <button
                         onClick={() => handleSetComplete(exerciseIndex, setIndex)}
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
                           set.completed
                             ? 'bg-green-500 text-white'
                             : 'bg-dark-700 text-gray-500 hover:bg-dark-600'
                         }`}
                       >
                         {set.completed ? (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         ) : (
-                          <span className="text-sm">{setIndex + 1}</span>
+                          <span className="text-xs">{setIndex + 1}</span>
                         )}
                       </button>
+                    </div>
+                    
+                    {/* Desktop layout */}
+                    <div className="hidden md:grid md:grid-cols-5 gap-2 items-center">
+                      <div className="text-center">
+                        <span className={`text-sm font-medium ${set.completed ? 'text-green-400' : 'text-gray-400'}`}>
+                          {setIndex + 1}
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-gray-500 text-sm">--</span>
+                      </div>
+                      <div>
+                        <input
+                          type="number"
+                          value={set.weight}
+                          onChange={(e) => handleWeightChange(exerciseIndex, setIndex, parseFloat(e.target.value) || 0)}
+                          className="w-full bg-dark-700 border border-dark-600 rounded-lg px-2 py-2 text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="number"
+                          value={set.reps}
+                          onChange={(e) => handleRepsChange(exerciseIndex, setIndex, parseInt(e.target.value) || 0)}
+                          className="w-full bg-dark-700 border border-dark-600 rounded-lg px-2 py-2 text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() => handleSetComplete(exerciseIndex, setIndex)}
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                            set.completed
+                              ? 'bg-green-500 text-white'
+                              : 'bg-dark-700 text-gray-500 hover:bg-dark-600'
+                          }`}
+                        >
+                          {set.completed ? (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <span className="text-sm">{setIndex + 1}</span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Mobile inputs */}
+                    <div className="grid grid-cols-2 gap-2 md:hidden">
+                      <div>
+                        <label className="text-xs text-gray-500 mb-1 block">Weight</label>
+                        <input
+                          type="number"
+                          value={set.weight}
+                          onChange={(e) => handleWeightChange(exerciseIndex, setIndex, parseFloat(e.target.value) || 0)}
+                          className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500 mb-1 block">Reps</label>
+                        <input
+                          type="number"
+                          value={set.reps}
+                          onChange={(e) => handleRepsChange(exerciseIndex, setIndex, parseInt(e.target.value) || 0)}
+                          className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}

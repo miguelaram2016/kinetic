@@ -1,0 +1,918 @@
+{
+  "exercises": [
+    {
+      "id": "bench-press",
+      "name": "Bench Press",
+      "muscleGroups": ["chest"],
+      "secondaryMuscles": ["triceps", "shoulders"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Lie flat on a bench with your feet firmly on the floor",
+        "Grip the barbell slightly wider than shoulder-width",
+        "Unrack the bar and hold it directly above your chest with arms extended",
+        "Lower the bar slowly to your mid-chest, keeping elbows at about 45 degrees",
+        "Press the bar back up to the starting position",
+        "Keep your core tight and back slightly arched throughout"
+      ],
+      "tips": [
+        "Keep shoulder blades pinched together and retracted",
+        "Don't bounce the bar off your chest",
+        "Drive through your legs for stability",
+        "Keep wrists straight to avoid strain"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=rT7DgCr-3pg",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "incline-bench-press",
+      "name": "Incline Bench Press",
+      "muscleGroups": ["chest", "shoulders"],
+      "secondaryMuscles": ["triceps"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Set the bench to a 30-45 degree incline",
+        "Lie back and grip the bar slightly wider than shoulder-width",
+        "Unrack the bar and hold it above your chest",
+        "Lower the bar to your upper chest",
+        "Press back up to starting position",
+        "Keep your back flat against the bench"
+      ],
+      "tips": [
+        "Don't flare elbows too wide",
+        "Control the descent - don't drop the weight",
+        "Use a spotter for heavy lifts"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=8iPEnn-ltC8",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "dumbbell-bench-press",
+      "name": "Dumbbell Bench Press",
+      "muscleGroups": ["chest"],
+      "secondaryMuscles": ["triceps", "shouldarms"],
+      "equipment": ["dumbbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Lie flat on a bench holding dumbbells at chest level",
+        "Press the dumbbells up until arms are extended",
+        "Lower the dumbbells slowly back to chest level",
+        "Keep a slight arch in your lower back",
+        "Maintain shoulder blade retraction throughout"
+      ],
+      "tips": [
+        "Allows for greater range of motion than barbell",
+        "Fix muscle imbalances between sides",
+        "Keep dumbbells in line with mid-chest"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=VmB1G1K7v94",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "push-ups",
+      "name": "Push-Ups",
+      "muscleGroups": ["chest"],
+      "secondaryMuscles": ["triceps", "shoulders", "core"],
+      "equipment": ["bodyweight"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Start in a plank position with hands slightly wider than shoulders",
+        "Keep your body in a straight line from head to heels",
+        "Lower your chest toward the ground by bending elbows",
+        "Push back up to the starting position",
+        "Keep core engaged throughout the movement"
+      ],
+      "tips": [
+        "Don't let hips sag or pike up",
+        "Keep elbows at 45 degrees to body",
+        "Scale on knees if needed",
+        "Squeeze chest at the top"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=IODxDxX7oi4",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 7
+    },
+    {
+      "id": "chest-fly",
+      "name": "Chest Fly",
+      "muscleGroups": ["chest"],
+      "secondaryMuscles": ["shoulders"],
+      "equipment": ["dumbbell", "cable"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Lie on a flat bench or stand between cable towers",
+        "Hold weights or cables at chest level with arms extended",
+        "With a slight bend in elbows, lower arms out to the sides",
+        "Feel a stretch in your chest",
+        "Bring arms back together in a hugging motion"
+      ],
+      "tips": [
+        "Don't go too heavy - this is an isolation exercise",
+        "Keep the bend in elbows consistent",
+        "Focus on the squeeze at the top"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=eGjACR1D93M",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "cable-crossover",
+      "name": "Cable Crossover",
+      "muscleGroups": ["chest"],
+      "secondaryMuscles": ["shoulders"],
+      "equipment": ["cable"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Stand between two cable towers with handles set high",
+        "Step forward with one foot for stability",
+        "With arms slightly bent, bring hands together in front of you",
+        "Squeeze chest at the bottom of the movement",
+        "Slowly return to the starting position"
+      ],
+      "tips": [
+        "Vary the angle to target different parts of chest",
+        "Lean slightly forward for lower chest",
+        "Control the negative"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=taI4XduLpTk",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "squat",
+      "name": "Barbell Squat",
+      "muscleGroups": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "core", "lower-back"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Position bar on upper back (not neck), grip slightly wider",
+        "Stand with feet shoulder-width apart, toes slightly out",
+        "Brace core and unrack the weight",
+        "Initiate by pushing hips back and bending knees",
+        "Squat down until thighs are at least parallel to floor",
+        "Drive through heels to stand back up"
+      ],
+      "tips": [
+        "Keep chest up and back straight",
+        "Don't let knees cave inward",
+        "Push knees out in line with toes",
+        "Keep weight balanced on mid-foot"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=bEv6CCg2BC8",
+      "movementPattern": ["squat"],
+      "caloriesPerMinute": 8
+    },
+    {
+      "id": "front-squat",
+      "name": "Front Squat",
+      "muscleGroups": ["quadriceps"],
+      "secondaryMuscles": ["glutes", "core", "hamstrings"],
+      "equipment": ["barbell"],
+      "difficulty": "advanced",
+      "instructions": [
+        "Rest bar on front deltoids, elbows high",
+        "Cross arms to secure bar or use clean grip",
+        "Stand with feet shoulder-width or slightly wider",
+        "Squat down keeping torso upright",
+        "Go as deep as mobility allows",
+        "Drive through heels to stand"
+      ],
+      "tips": [
+        "Requires good shoulder mobility",
+        "Keep elbows high throughout",
+        "More quad-dominant than back squat"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=clZl0-KP6nM",
+      "movementPattern": ["squat"],
+      "caloriesPerMinute": 8
+    },
+    {
+      "id": "leg-press",
+      "name": "Leg Press",
+      "muscleGroups": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings"],
+      "equipment": ["machine"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Sit in leg press machine with back flat against pad",
+        "Place feet shoulder-width on platform",
+        "Release safety and lower weight by bending knees",
+        "Lower until knees are at 90 degrees",
+        "Press platform away until legs are almost extended",
+        "Don't lock out knees completely"
+      ],
+      "tips": [
+        "Foot placement affects muscle targeting",
+        "Higher foot placement = more glutes",
+        "Lower placement = more quads"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
+      "movementPattern": ["squat"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "leg-extension",
+      "name": "Leg Extension",
+      "muscleGroups": ["quadriceps"],
+      "secondaryMuscles": [],
+      "equipment": ["machine"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Sit in leg extension machine with pad on lower shin",
+        "Grip handles for stability",
+        "Extend legs until straight",
+        "Squeeze quads at the top",
+        "Lower slowly back to starting position"
+      ],
+      "tips": [
+        "Don't use momentum",
+        "Control the negative portion",
+        "Great for quad isolation and pre-exhaust"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=P8j-1Xbyj6Q",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "leg-curl",
+      "name": "Leg Curl",
+      "muscleGroups": ["hamstrings"],
+      "secondaryMuscles": ["glutes"],
+      "equipment": ["machine"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Lie face down on leg curl machine",
+        "Position pad just above heels",
+        "Curl heels toward glutes",
+        "Squeeze hamstrings at the top",
+        "Lower slowly back down"
+      ],
+      "tips": [
+        "Don't lift hips off the pad",
+        "Control the movement throughout",
+        "Can do stiff-legged for more glute focus"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=UXJrBGhrvWY",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "lunges",
+      "name": "Walking Lunges",
+      "muscleGroups": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "core"],
+      "equipment": ["bodyweight", "dumbbell"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand with feet hip-width apart",
+        "Step forward with one leg into a lunge",
+        "Lower back knee toward floor",
+        "Front thigh should be parallel to floor",
+        "Push through front foot to step forward",
+        "Alternate legs while walking"
+      ],
+      "tips": [
+        "Keep torso upright",
+        "Don't let front knee pass toes",
+        "Can add dumbbells for resistance"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=QOVaHwm-Q6U",
+      "movementPattern": ["squat", "carry"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "romanian-deadlift",
+      "name": "Romanian Deadlift",
+      "muscleGroups": ["hamstrings", "glutes"],
+      "secondaryMuscles": ["lower-back", "traps", "forearms"],
+      "equipment": ["barbell", "dumbbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Stand with feet hip-width apart, holding barbell",
+        "Hinge at hips, pushing them back",
+        "Keep bar close to legs throughout",
+        "Lower until you feel hamstring stretch",
+        "Drive hips forward to return to standing"
+      ],
+      "tips": [
+        "Keep slight knee bend",
+        "Don't round lower back",
+        "Push hips back like closing a car door"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=JCXUYuzwNrM",
+      "movementPattern": ["hinge"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "deadlift",
+      "name": "Deadlift",
+      "muscleGroups": ["back", "glutes", "hamstrings"],
+      "secondaryMuscles": ["quadriceps", "core", "traps", "forearms", "lower-back"],
+      "equipment": ["barbell"],
+      "difficulty": "advanced",
+      "instructions": [
+        "Stand with feet hip-width, bar over mid-foot",
+        "Bend at hips and knees to grip bar",
+        "Keep back flat, chest up, shoulders over bar",
+        "Drive through heels to stand",
+        "Keep bar close to body throughout",
+        "Hinge at hips to lower bar back down"
+      ],
+      "tips": [
+        "Engage lats by 'protecting armpits'",
+        "Don't let back round",
+        "Push floor away, don't pull bar up"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=op9kVnSso6Q",
+      "movementPattern": ["hinge", "squat"],
+      "caloriesPerMinute": 9
+    },
+    {
+      "id": "barbell-row",
+      "name": "Barbell Row",
+      "muscleGroups": ["back", "lats"],
+      "secondaryMuscles": ["biceps", "traps", "rhomboids"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Hinge at hips holding barbell with overhand grip",
+        "Keep back flat at 45-degree angle",
+        "Pull barbell toward lower chest/upper abs",
+        "Squeeze shoulder blades together at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "Don't use body english",
+        "Pull with elbows, not hands",
+        "Keep core tight"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=FWJR5Ve8bnQ",
+      "movementPattern": ["pull"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "pull-ups",
+      "name": "Pull-Ups",
+      "muscleGroups": ["lats", "back"],
+      "secondaryMuscles": ["biceps", "forearms", "traps"],
+      "equipment": ["bodyweight"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Hang from bar with overhand grip, slightly wider than shoulders",
+        "Pull yourself up until chin is over bar",
+        "Keep core engaged, avoid swinging",
+        "Lower with control to full arm extension"
+      ],
+      "tips": [
+        "Initiate pull by depressing shoulders",
+        "Think about driving elbows down",
+        "Use assisted if needed to maintain form"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=eGo4IYlbE5g",
+      "movementPattern": ["pull"],
+      "caloriesPerMinute": 7
+    },
+    {
+      "id": "chin-ups",
+      "name": "Chin-Ups",
+      "muscleGroups": ["biceps", "lats"],
+      "secondaryMuscles": ["back", "forearms"],
+      "equipment": ["bodyweight"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Hang from bar with underhand grip, shoulder-width",
+        "Pull yourself up until chin is over bar",
+        "Keep body straight, avoid kipping",
+        "Lower with control"
+      ],
+      "tips": [
+        "More bicep engagement than pull-ups",
+        "Great for building arm strength",
+        "Easier than pull-ups for most"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=brFHyOtTwH4",
+      "movementPattern": ["pull"],
+      "caloriesPerMinute": 7
+    },
+    {
+      "id": "lat-pulldown",
+      "name": "Lat Pulldown",
+      "muscleGroups": ["lats"],
+      "secondaryMuscles": ["biceps", "back"],
+      "equipment": ["cable", "machine"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Sit at lat pulldown machine, secure thighs under pad",
+        "Grip bar wider than shoulder-width",
+        "Pull bar down to upper chest",
+        "Squeeze lats at bottom",
+        "Control the return to starting position"
+      ],
+      "tips": [
+        "Lean back slightly for better angle",
+        "Don't pull behind neck",
+        "Focus on lats, not arms"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=CAwf7n6Luuc",
+      "movementPattern": ["pull"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "seated-cable-row",
+      "name": "Seated Cable Row",
+      "muscleGroups": ["back", "lats"],
+      "secondaryMuscles": ["biceps", "traps", "rhomboids"],
+      "equipment": ["cable"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Sit at cable row station with feet on platform",
+        "Grab handle with straight arms",
+        "Pull handle to abdomen while keeping back straight",
+        "Squeeze shoulder blades together",
+        "Return with control"
+      ],
+      "tips": [
+        "Don't lean back excessively",
+        "Keep core tight",
+        "Focus on squeezing shoulder blades"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=GZbfZ-304Ns",
+      "movementPattern": ["pull"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "face-pull",
+      "name": "Face Pull",
+      "muscleGroups": ["traps", "shoulders"],
+      "secondaryMuscles": ["rhomboids", "rear-delts"],
+      "equipment": ["cable"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Set cable at face height with rope attachment",
+        "Pull rope toward face, separating hands",
+        "External rotate shoulders at end",
+        "Squeeze rear delts and traps",
+        "Return with control"
+      ],
+      "tips": [
+        "Great for shoulder health",
+        "Don't use too much weight",
+        "Focus on external rotation"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+      "movementPattern": ["pull"],
+      "caloriesPerMinute": 3
+    },
+    {
+      "id": "overhead-press",
+      "name": "Overhead Press",
+      "muscleGroups": ["shoulders"],
+      "secondaryMuscles": ["triceps", "traps", "core"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Stand with barbell at shoulder level",
+        "Grip slightly wider than shoulders",
+        "Press bar overhead to full extension",
+        "Lock out arms at top",
+        "Lower with control to starting position"
+      ],
+      "tips": [
+        "Keep core tight to avoid lower back strain",
+        "Don't excessive arch lower back",
+        "Push head through as bar passes"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=2yjwXTZQDDI",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "dumbbell-shoulder-press",
+      "name": "Dumbbell Shoulder Press",
+      "muscleGroups": ["shoulders"],
+      "secondaryMuscles": ["triceps", "traps"],
+      "equipment": ["dumbbell"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Sit or stand with dumbbells at shoulder height",
+        "Palms facing forward",
+        "Press dumbbells overhead",
+        "Bring dumbbells together at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "More range of motion than barbell",
+        "Can fix muscle imbalances",
+        "Keep core engaged"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=qEwKCR5JCog",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "lateral-raise",
+      "name": "Lateral Raise",
+      "muscleGroups": ["shoulders"],
+      "secondaryMuscles": ["traps"],
+      "equipment": ["dumbbell"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand with dumbbells at sides",
+        "With slight bend in elbows, raise arms to sides",
+        "Lift until arms are parallel to floor",
+        "Squeeze delts at top",
+        "Lower slowly"
+      ],
+      "tips": [
+        "Don't swing weights up",
+        "Lead with elbows, not hands",
+        "Use lighter weight with strict form"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "front-raise",
+      "name": "Front Raise",
+      "muscleGroups": ["shoulders"],
+      "secondaryMuscles": ["traps", "chest"],
+      "equipment": ["dumbbell"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand with dumbbells in front of thighs",
+        "With straight arms, raise one or both dumbbells forward",
+        "Lift to shoulder height",
+        "Lower with control"
+      ],
+      "tips": [
+        "Don't use momentum",
+        "Can alternate arms",
+        "Keep core tight"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=4Fkn3E2-zTQ",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 3
+    },
+    {
+      "id": "bicep-curl",
+      "name": "Bicep Curl",
+      "muscleGroups": ["biceps"],
+      "secondaryMuscles": ["forearms"],
+      "equipment": ["dumbbell", "barbell", "cable"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand with dumbbells at sides, palms forward",
+        "Curl weights toward shoulders",
+        "Squeeze biceps at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "Keep elbows stationary at sides",
+        "Don't swing body to lift",
+        "Full range of motion"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=kwG2ipFRgfo",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "hammer-curl",
+      "name": "Hammer Curl",
+      "muscleGroups": ["biceps", "forearms"],
+      "secondaryMuscles": [],
+      "equipment": ["dumbbell"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand with dumbbells at sides, palms facing each other",
+        "Curl weights up keeping palms facing each other",
+        "Squeeze at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "Targets brachialis and forearms too",
+        "Great for overall arm development",
+        "Keep elbows close to body"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=zC3nLlE2p0U",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "tricep-pushdown",
+      "name": "Tricep Pushdown",
+      "muscleGroups": ["triceps"],
+      "secondaryMuscles": [],
+      "equipment": ["cable"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand at cable machine with bar or rope at chest height",
+        "Grip attachment with elbows at sides",
+        "Push down until arms are fully extended",
+        "Squeeze triceps at bottom",
+        "Return with control"
+      ],
+      "tips": [
+        "Keep elbows pinned to sides",
+        "Don't lean forward",
+        "Use various attachments for variety"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 3
+    },
+    {
+      "id": "skull-crushers",
+      "name": "Skull Crushers",
+      "muscleGroups": ["triceps"],
+      "secondaryMuscles": [],
+      "equipment": ["ez-bar", "dumbbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Lie on bench with weight extended over chest",
+        "Lower weight toward forehead by bending elbows",
+        "Keep upper arms stationary",
+        "Extend arms back to starting position"
+      ],
+      "tips": [
+        "Use EZ bar for wrist comfort",
+        "Don't actually hit skull - keep controlled",
+        "Can do decline for more challenge"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=d8n1E0X4k2w",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "close-grip-bench",
+      "name": "Close-Grip Bench Press",
+      "muscleGroups": ["triceps"],
+      "secondaryMuscles": ["chest", "shoulders"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Lie on bench, grip bar with hands shoulder-width or closer",
+        "Lower bar to lower chest",
+        "Keep elbows close to body",
+        "Press back up"
+      ],
+      "tips": [
+        "Don't go too narrow - shoulder injury risk",
+        "More tricep than regular bench",
+        "Keep elbows tucked"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=rMvh57_QGQY",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "dips",
+      "name": "Dips",
+      "muscleGroups": ["triceps", "chest"],
+      "secondaryMuscles": ["shoulders"],
+      "equipment": ["bodyweight"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Support yourself on parallel bars or dip station",
+        "Lower body by bending elbows",
+        "Lower until upper arms are parallel to floor",
+        "Push back up to starting position"
+      ],
+      "tips": [
+        "Lean forward for more chest",
+        "Stay upright for more triceps",
+        "Don't go too deep if you have shoulder issues"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=2z8JmcrW-As",
+      "movementPattern": ["push"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "plank",
+      "name": "Plank",
+      "muscleGroups": ["core", "abs"],
+      "secondaryMuscles": ["shoulders", "glutes"],
+      "equipment": ["bodyweight"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Start in push-up position on forearms",
+        "Keep body in straight line from head to heels",
+        "Engage core, don't let hips sag or pike",
+        "Hold position for time"
+      ],
+      "tips": [
+        "Squeeze glutes for better form",
+        "Don't hold breath",
+        "Start with 30 seconds, build up"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=pSHjTRCQxIw",
+      "movementPattern": ["anti-rotation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "crunches",
+      "name": "Crunches",
+      "muscleGroups": ["abs"],
+      "secondaryMuscles": [],
+      "equipment": ["bodyweight"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Lie on back, knees bent, feet flat",
+        "Place hands behind head or crossed on chest",
+        "Curl shoulders off floor, engaging abs",
+        "Lower with control"
+      ],
+      "tips": [
+        "Don't pull on neck",
+        "Focus on ab contraction",
+        "Small range of motion is fine"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=Xyd_fa5zoEU",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 3
+    },
+    {
+      "id": "russian-twist",
+      "name": "Russian Twist",
+      "muscleGroups": ["obliques", "abs"],
+      "secondaryMuscles": [],
+      "equipment": ["bodyweight", "medicine-ball"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Sit with knees bent, feet off floor",
+        "Lean back slightly to engage core",
+        "Rotate torso side to side",
+        "Touch weight to floor each side"
+      ],
+      "tips": [
+        "Keep spine straight",
+        "Control the rotation",
+        "Add weight for more challenge"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=wkD8rjkodUI",
+      "movementPattern": ["rotation"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "hanging-leg-raise",
+      "name": "Hanging Leg Raise",
+      "muscleGroups": ["abs"],
+      "secondaryMuscles": ["obliques", "hip-flexors"],
+      "equipment": ["bodyweight"],
+      "difficulty": "advanced",
+      "instructions": [
+        "Hang from pull-up bar with straight arms",
+        "Raise legs until parallel to floor or higher",
+        "Keep legs straight or bend knees",
+        "Lower with control"
+      ],
+      "tips": [
+        "Don't swing",
+        "Start with bent knees if too hard",
+        "Great for lower ab focus"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=JBwowoy7R3c",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "cable-woodchop",
+      "name": "Cable Woodchop",
+      "muscleGroups": ["obliques", "core"],
+      "secondaryMuscles": ["abs", "shoulders"],
+      "equipment": ["cable"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Set cable at chest height, stand sideways",
+        "Grab handle with both hands",
+        "Rotate and pull cable diagonally down",
+        "Control the movement both ways"
+      ],
+      "tips": [
+        "Keep core tight throughout",
+        "Don't use momentum",
+        "Great for rotational strength"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=5-e5J90S1GQ",
+      "movementPattern": ["rotation"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "calf-raise",
+      "name": "Calf Raise",
+      "muscleGroups": ["calves"],
+      "secondaryMuscles": [],
+      "equipment": ["machine", "bodyweight"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Stand on calf raise machine or edge of step",
+        "Lower heels below platform for stretch",
+        "Rise up onto balls of feet",
+        "Squeeze calves at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "Full range of motion is key",
+        "Pause at top",
+        "Vary foot angle to target different parts"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=gwLzBJYoWlI",
+      "movementPattern": ["isolation"],
+      "caloriesPerMinute": 3
+    },
+    {
+      "id": "hip-thrust",
+      "name": "Hip Thrust",
+      "muscleGroups": ["glutes"],
+      "secondaryMuscles": ["hamstrings"],
+      "equipment": ["barbell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Sit with upper back against bench, barbell over hips",
+        "Drive through heels to lift hips",
+        "Squeeze glutes at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "Use pad for comfort",
+        "Don't hyperextend back",
+        "One of the best glute exercises"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=8ZIlVflMFoI",
+      "movementPattern": ["hinge"],
+      "caloriesPerMinute": 5
+    },
+    {
+      "id": "glute-bridge",
+      "name": "Glute Bridge",
+      "muscleGroups": ["glutes"],
+      "secondaryMuscles": ["hamstrings", "core"],
+      "equipment": ["bodyweight"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Lie on back, knees bent, feet flat",
+        "Drive through heels to lift hips",
+        "Squeeze glutes at top",
+        "Lower with control"
+      ],
+      "tips": [
+        "Don't hyperextend lower back",
+        "Great glute activator before heavier lifts",
+        "Can add band for more resistance"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=8ZIlVflMFoI",
+      "movementPattern": ["hinge"],
+      "caloriesPerMinute": 4
+    },
+    {
+      "id": "farmers-walk",
+      "name": "Farmer's Walk",
+      "muscleGroups": ["forearms", "traps"],
+      "secondaryMuscles": ["core", "shoulders", "legs"],
+      "equipment": ["dumbbell", "kettlebell"],
+      "difficulty": "beginner",
+      "instructions": [
+        "Hold heavy weights at sides",
+        "Stand tall with shoulders back",
+        "Walk with controlled steps",
+        "Maintain upright posture"
+      ],
+      "tips": [
+        "Keep shoulders down, don't shrug",
+        "Take short, quick steps",
+        "Grip strength is key"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=45A2j5dX4vE",
+      "movementPattern": ["carry"],
+      "caloriesPerMinute": 6
+    },
+    {
+      "id": "kettlebell-swing",
+      "name": "Kettlebell Swing",
+      "muscleGroups": ["glutes", "hamstrings"],
+      "secondaryMuscles": ["core", "shoulders", "lower-back"],
+      "equipment": ["kettlebell"],
+      "difficulty": "intermediate",
+      "instructions": [
+        "Stand with feet wider than shoulder-width",
+        "Hinge at hips to grab kettlebell with both hands",
+        "Swing kettlebell back between legs",
+        "Drive hips forward to swing kettlebell to chest height",
+        "Let it swing back down and repeat"
+      ],
+      "tips": [
+        "Power comes from hips, not arms",
+        "Keep back flat",
+        "Squeeze glutes at top of swing"
+      ],
+      "videoUrl": "https://www.youtube.com/watch?v=YSxHifyI6s8",
+      "movementPattern": ["hinge", "carry"],
+      "caloriesPerMinute": 8
+    }
+  ]
+}

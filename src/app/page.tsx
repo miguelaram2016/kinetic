@@ -60,15 +60,15 @@ export default function DashboardPage() {
   const todayCalories = todayFood.reduce((sum, e) => sum + e.calories, 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">Dashboard</h1>
         <p className="text-gray-400 mt-1">Welcome back! Let&apos;s crush today&apos;s workout.</p>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         <div className="bg-dark-800 rounded-2xl p-6 border border-dark-700">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">

@@ -59,22 +59,24 @@ export default function ProgramsPage() {
       name: template.name,
       phases: template.phases,
       currentPhase: 0,
+      isActive: programs.length === 0, // First program is active by default
     });
     setShowCreateModal(false);
   };
 
-  const activeProgram = programs.length > 0 ? programs[0] : null;
+  // Get the active program (the one with isActive: true, or first if none)
+  const activeProgram = programs.find(p => p.isActive) || (programs.length > 0 ? programs[0] : null);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Training Programs</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Training Programs</h1>
           <p className="text-gray-400 mt-1">Follow structured training programs</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 bg-primary hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+          className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors min-h-[44px]"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -220,7 +222,9 @@ export default function ProgramsPage() {
                 <div className="flex gap-2 mt-3">
                   <button
                     onClick={() => {
-                      updateProgram(program.id, { currentPhase: 0 });
+                      // Deactivate all programs, then activate this one
+                      programs.forEach(p => updateProgram(p.id, { isActive: false }));
+                      updateProgram(program.id, { isActive: true, currentPhase: 0 });
                     }}
                     className="flex-1 text-primary hover:text-primary-400 text-sm font-medium"
                   >
