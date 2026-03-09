@@ -502,7 +502,10 @@ export default function ReferencePage() {
                   >
                     {userPrograms.length === 0 ? 'Start This Program' : 'Go to Programs'}
                   </button>
-                  <button className="px-4 py-3 bg-dark-700 text-gray-300 rounded-xl hover:text-white transition-colors">
+                  <button 
+                    onClick={() => alert('Program details coming soon!')}
+                    className="px-4 py-3 bg-dark-700 text-gray-300 rounded-xl hover:text-white transition-colors"
+                  >
                     View Details
                   </button>
                 </div>
@@ -591,7 +594,10 @@ export default function ReferencePage() {
                   >
                     Add to Calendar
                   </button>
-                  <button className="px-4 py-3 bg-dark-700 text-gray-300 rounded-xl hover:text-white transition-colors">
+                  <button 
+                    onClick={() => alert('Workout details coming soon!')}
+                    className="px-4 py-3 bg-dark-700 text-gray-300 rounded-xl hover:text-white transition-colors"
+                  >
                     View Details
                   </button>
                 </div>

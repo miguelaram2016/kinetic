@@ -210,7 +210,7 @@ export default function ProgramsPage() {
         <div className="bg-dark-800 rounded-2xl border border-dark-700 p-6">
           <h3 className="text-lg font-semibold text-white mb-4">Your Programs</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {programs.slice(1).map((program) => (
+            {programs.filter(p => !p.isActive).map((program) => (
               <div
                 key={program.id}
                 className="p-4 bg-dark-700/50 rounded-xl"

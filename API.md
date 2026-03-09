@@ -1,5 +1,16 @@
 # Kinetic Fitness App - API Documentation
 
+## ⚠️ Architecture Note
+
+Kinetic uses **two data layers**:
+
+1. **Client-side (default)**: All UI interactions use `localStorage` for persistence. This is the primary data layer and works offline.
+2. **API (external tools only)**: REST endpoints for external tools/LLMs to access data. **Requires a persistent backend** — the API routes use file system (`fs.writeFileSync`) which does NOT work on Vercel/serverless.
+
+For local development, you can run a separate API server. For production with external access, you'll need a real database (PostgreSQL, MongoDB, etc.).
+
+---
+
 ## Overview
 This API allows external tools and LLMs to access and modify Kinetic fitness data through RESTful endpoints.
 
@@ -7,6 +18,8 @@ This API allows external tools and LLMs to access and modify Kinetic fitness dat
 ```
 http://localhost:3001/api
 ```
+
+> **Note**: The API runs on a separate port (3001) from the main Next.js app. Run `node backend/server.js` to start the API server.
 
 ## Authentication
 All endpoints require an API key passed via the `X-API-Key` header:
@@ -87,14 +100,39 @@ KINETIC_API_KEY=your-secret-key
 }
 ```
 
-## Data Files
-JSON data files are stored in `/src/data/`:
+## Data Storage
+
+### LocalStorage (Primary - Client)
+The main app stores data in browser localStorage:
+- `kinetic_workouts` - Workout logs
+- `kinetic_programs` - Training programs
+- `kinetic_weight` - Weight entries
+- `kinetic_food` - Food/nutrition logs
+- `kinetic_exercise_favorites` - Favorite exercises
+
+### JSON Files (API Backend)
+The API server reads/writes JSON files in `/src/data/`:
 - `user.json` - User profile
 - `exercises.json` - Exercise library
 - `workouts.json` - Workout logs
 - `programs.json` - Training programs
 - `weight.json` - Weight logs
 - `food.json` - Food/nutrition logs
+
+## Running the API Server
+
+```bash
+# Install dependencies
+npm install
+
+# Start the Next.js app (includes API routes for local dev)
+npm run dev
+
+# For external API access, run separate server (requires persistent filesystem)
+node backend/server.js
+```
+
+---
 
 ## Example Usage
 

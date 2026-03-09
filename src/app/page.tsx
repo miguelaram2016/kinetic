@@ -221,7 +221,10 @@ export default function DashboardPage() {
                 <span className="text-gray-300">Program</span>
               </div>
               <span className="text-white font-semibold">
-                {programs.length > 0 ? programs[0].name : 'No active program'}
+                {(() => {
+                  const activeProgram = programs.find(p => p.isActive) || (programs.length > 0 ? programs[0] : null);
+                  return activeProgram ? activeProgram.name : 'No active program';
+                })()}
               </span>
             </div>
           </div>
