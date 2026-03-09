@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
   const router = useRouter();
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,26 @@ export default function SignInPage() {
       return;
     }
 
+    // If signing up, first check if user exists
+    if (isSignUp) {
+      try {
+        const checkRes = await fetch('/api/auth/check-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const checkData = await checkRes.json();
+        
+        if (checkData.exists) {
+          setError('An account with this email already exists. Sign in instead.');
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error('Check user error:', err);
+      }
+    }
+
     const result = await signIn('credentials', {
       email,
       name,
@@ -29,7 +50,7 @@ export default function SignInPage() {
     });
 
     if (result?.error) {
-      setError('Something went wrong. Please try again.');
+      setError(result.error);
       setLoading(false);
     } else {
       router.push('/');
@@ -44,8 +65,40 @@ export default function SignInPage() {
           <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="text-white font-bold text-2xl">K</span>
           </div>
-          <h1 className="text-3xl font-bold text-white">Welcome to Kinetic</h1>
-          <p className="text-gray-400 mt-2">Your AI-powered fitness companion</p>
+          <h1 className="text-3xl font-bold text-white">
+            {isSignUp ? 'Create Account' : 'Welcome Back'}
+          </h1>
+          <p className="text-gray-400 mt-2">
+            {isSignUp 
+              ? 'Start your fitness journey with Kinetic' 
+              : 'Continue your fitness journey'}
+          </p>
+        </div>
+
+        {/* Toggle */}
+        <div className="flex bg-dark-800 rounded-xl p-1 mb-6">
+          <button
+            type="button"
+            onClick={() => { setIsSignUp(false); setError(''); }}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+              !isSignUp 
+                ? 'bg-primary text-white' 
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => { setIsSignUp(true); setError(''); }}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+              isSignUp 
+                ? 'bg-primary text-white' 
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Sign Up
+          </button>
         </div>
 
         <div className="bg-dark-800 rounded-2xl border border-dark-700 p-8">
@@ -66,7 +119,7 @@ export default function SignInPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">
-                Your Name
+                {isSignUp ? 'Choose a Name' : 'Your Name'}
               </label>
               <input
                 type="text"
@@ -87,7 +140,9 @@ export default function SignInPage() {
               disabled={loading}
               className="w-full bg-primary hover:bg-primary-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
             >
-              {loading ? 'Signing in...' : 'Get Started'}
+              {loading 
+                ? (isSignUp ? 'Creating account...' : 'Signing in...') 
+                : (isSignUp ? 'Create Account' : 'Sign In')}
             </button>
           </form>
 

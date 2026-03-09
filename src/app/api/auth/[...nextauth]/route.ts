@@ -19,11 +19,12 @@ const handler = NextAuth({
         try {
           await dbConnect();
           
-          let user = await User.findOne({ email: credentials.email });
+          let user = await User.findOne({ email: credentials.email.toLowerCase() });
           
+          // Auto-create if doesn't exist (for seamless sign up)
           if (!user) {
             user = await User.create({
-              email: credentials.email,
+              email: credentials.email.toLowerCase(),
               name: credentials.name,
             });
           }
