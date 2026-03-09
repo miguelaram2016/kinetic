@@ -23,38 +23,24 @@ export default function SignInPage() {
       return;
     }
 
-    // If signing up, first check if user exists
-    if (isSignUp) {
-      try {
-        const checkRes = await fetch('/api/auth/check-user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const checkData = await checkRes.json();
-        
-        if (checkData.exists) {
-          setError('An account with this email already exists. Sign in instead.');
-          setLoading(false);
-          return;
-        }
-      } catch (err) {
-        console.error('Check user error:', err);
+    try {
+      const result = await signIn('credentials', {
+        email,
+        name,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Authentication failed. Please try again.');
+        setLoading(false);
+      } else {
+        // Success - redirect
+        router.push('/');
       }
-    }
-
-    const result = await signIn('credentials', {
-      email,
-      name,
-      redirect: false,
-    });
-
-    if (result?.error) {
-      setError(result.error);
+    } catch (err) {
+      console.error('Sign in error:', err);
+      setError('Something went wrong. Please try again.');
       setLoading(false);
-    } else {
-      router.push('/');
-      router.refresh();
     }
   };
 
@@ -114,12 +100,13 @@ export default function SignInPage() {
                 className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="you@example.com"
                 required
+                disabled={loading}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">
-                {isSignUp ? 'Choose a Name' : 'Your Name'}
+                Your Name
               </label>
               <input
                 type="text"
@@ -128,6 +115,7 @@ export default function SignInPage() {
                 className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="John"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -138,10 +126,10 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-primary-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
+              className="w-full bg-primary hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
             >
               {loading 
-                ? (isSignUp ? 'Creating account...' : 'Signing in...') 
+                ? 'Please wait...' 
                 : (isSignUp ? 'Create Account' : 'Sign In')}
             </button>
           </form>
