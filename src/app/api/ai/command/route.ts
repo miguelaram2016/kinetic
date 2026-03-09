@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
     
     const result = await processCommand(command, useLLM || false);
     return NextResponse.json(result);
-  } catch (error) {
+  } catch (e) {
     return NextResponse.json({ 
       error: 'Failed to process command',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: e instanceof Error ? e.message : 'Unknown error'
     }, { status: 500 });
   }
 }
@@ -41,10 +41,10 @@ export async function GET(request: NextRequest) {
   try {
     const context = await getUserContext();
     return NextResponse.json(context);
-  } catch (error) {
+  } catch (e) {
     return NextResponse.json({ 
       error: 'Failed to get user context',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: e instanceof Error ? e.message : 'Unknown error'
     }, { status: 500 });
   }
 }

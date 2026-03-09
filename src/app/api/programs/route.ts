@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     }
     
     return NextResponse.json({ programs });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to read programs' }, { status: 500 });
   }
 }
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     
     fs.writeFileSync(programsFilePath, JSON.stringify(currentData, null, 2));
     return NextResponse.json({ program: newProgram }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create program' }, { status: 500 });
   }
 }

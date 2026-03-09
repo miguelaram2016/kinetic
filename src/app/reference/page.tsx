@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import exercisesData from '@/data/exercises.json';
 import programsData from '@/data/programs.json';
 import workoutsData from '@/data/workouts.json';
@@ -75,7 +74,7 @@ const difficulties = ['beginner', 'intermediate', 'advanced'];
 
 export default function ReferencePage() {
   const router = useRouter();
-  const { programs: userPrograms, addProgram, updateProgram } = usePrograms();
+  const { programs: userPrograms, addProgram } = usePrograms();
   const [activeTab, setActiveTab] = useState<Tab>('exercises');
   const [mounted, setMounted] = useState(false);
   

@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     entries.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
     return NextResponse.json({ entries });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to read weight data' }, { status: 500 });
   }
 }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     
     fs.writeFileSync(weightFilePath, JSON.stringify(currentData, null, 2));
     return NextResponse.json({ entry: newEntry }, { status: existingIndex >= 0 ? 200 : 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to add weight entry' }, { status: 500 });
   }
 }

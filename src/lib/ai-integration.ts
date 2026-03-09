@@ -78,7 +78,7 @@ const ENTITY_PATTERNS = {
  */
 export function parseCommand(input: string): AICommand {
   const lowerInput = input.toLowerCase();
-  const words = lowerInput.split(/\s+/);
+  const _words = lowerInput.split(/\s+/);
   
   // Find action
   let action = 'get';
@@ -422,7 +422,7 @@ function findExerciseId(exerciseName: string): string | null {
  * @param input - Natural language command (e.g., "add bench press to today's workout")
  * @param useLLM - Optional flag to use LLM for parsing (not implemented yet)
  */
-export async function processCommand(input: string, useLLM: boolean = false): Promise<AIResponse> {
+export async function processCommand(input: string, _useLLM: boolean = false): Promise<AIResponse> {
   // Parse the command
   const command = parseCommand(input);
   

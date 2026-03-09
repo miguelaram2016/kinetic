@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
     
     return NextResponse.json({ workouts });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to read workouts' }, { status: 500 });
   }
 }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     
     fs.writeFileSync(workoutsFilePath, JSON.stringify(currentData, null, 2));
     return NextResponse.json({ workout: newWorkout }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create workout' }, { status: 500 });
   }
 }

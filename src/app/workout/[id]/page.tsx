@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useWorkouts } from '@/lib/store';
 import { Workout } from '@/lib/types';
 import ExerciseDetail from '@/components/ExerciseDetail';
+
+const getWorkoutTimerKey = (workoutId: string) => `kinetic_workout_start_${workoutId}`;
 
 export default function WorkoutPage() {
   const params = useParams();
@@ -20,6 +22,25 @@ export default function WorkoutPage() {
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
+  // Load persisted start time from localStorage
+  const loadPersistedStartTime = useCallback((workoutId: string) => {
+    if (typeof window === 'undefined') return null;
+    const saved = localStorage.getItem(getWorkoutTimerKey(workoutId));
+    return saved ? parseInt(saved, 10) : null;
+  }, []);
+
+  // Persist start time to localStorage
+  const persistStartTime = useCallback((workoutId: string, startTime: number) => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(getWorkoutTimerKey(workoutId), startTime.toString());
+  }, []);
+
+  // Clear persisted start time
+  const clearPersistedStartTime = useCallback((workoutId: string) => {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(getWorkoutTimerKey(workoutId));
+  }, []);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -30,11 +51,23 @@ export default function WorkoutPage() {
     const found = workouts.find(w => w.id === params.id);
     if (found) {
       setWorkout(found);
-      if (!found.completed && !startTimeRef.current) {
-        startTimeRef.current = Date.now();
+      
+      // Check for persisted start time first
+      const savedStartTime = loadPersistedStartTime(found.id);
+      
+      if (!found.completed) {
+        if (savedStartTime) {
+          // Resume existing timer
+          startTimeRef.current = savedStartTime;
+        } else if (!startTimeRef.current) {
+          // Start new timer
+          const now = Date.now();
+          startTimeRef.current = now;
+          persistStartTime(found.id, now);
+        }
       }
     }
-  }, [mounted, params.id, workouts]);
+  }, [mounted, params.id, workouts, loadPersistedStartTime, persistStartTime]);
 
   useEffect(() => {
     if (!startTimeRef.current || workout?.completed) return;
@@ -44,7 +77,7 @@ export default function WorkoutPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [startTimeRef.current, workout?.completed]);
+  }, [workout?.completed]);
 
   useEffect(() => {
     if (showRestTimer && restRemaining > 0) {
@@ -134,6 +167,7 @@ export default function WorkoutPage() {
     if (!workout) return;
     
     const duration = startTimeRef.current ? Math.floor((Date.now() - startTimeRef.current) / 60000) : elapsedTime / 60;
+    clearPersistedStartTime(workout.id);
     completeWorkout(workout.id, duration);
     startTimeRef.current = null;
     router.push('/');

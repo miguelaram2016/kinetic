@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     }
     
     return NextResponse.json({ entries });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to read food data' }, { status: 500 });
   }
 }
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     
     fs.writeFileSync(foodFilePath, JSON.stringify(currentData, null, 2));
     return NextResponse.json({ entry: newEntry }, { status: existingIndex >= 0 ? 200 : 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to add food entry' }, { status: 500 });
   }
 }

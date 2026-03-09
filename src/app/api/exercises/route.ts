@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
     
     return NextResponse.json({ exercises });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to read exercises' }, { status: 500 });
   }
 }
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     
     fs.writeFileSync(exercisesFilePath, JSON.stringify(currentData, null, 2));
     return NextResponse.json({ exercise: newExercise }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create exercise' }, { status: 500 });
   }
 }

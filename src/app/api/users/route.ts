@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       fs.readFileSync(path.join(DATA_DIR, 'user.json'), 'utf-8')
     );
     return NextResponse.json(userData);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to read user data' }, { status: 500 });
   }
 }
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     
     fs.writeFileSync(userFilePath, JSON.stringify(updatedData, null, 2));
     return NextResponse.json(updatedData);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update user data' }, { status: 500 });
   }
 }
