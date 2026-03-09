@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { AuthProvider } from '@/components/AuthProvider';
 import './globals.css';
 
 const navItems = [
@@ -103,6 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-dark-900">
+        <AuthProvider>
         <div className="min-h-screen bg-dark-900 flex flex-col lg:flex-row">
           {/* Mobile Header */}
           <header className="lg:hidden bg-dark-800 border-b border-dark-700 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
@@ -234,6 +236,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </nav>
         </div>
+        </AuthProvider>
       </body>
     </html>
   );
