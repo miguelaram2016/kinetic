@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useWeight } from '@/lib/store';
+import WeightChart from '@/components/WeightChart';
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -36,10 +37,6 @@ export default function WeightPage() {
   const latestWeight = entries.length > 0 ? entries[entries.length - 1] : null;
   const startingWeight = entries.length > 0 ? entries[0] : null;
   const weightChange = startingWeight && latestWeight ? latestWeight.weight - startingWeight.weight : 0;
-
-  const maxWeight = Math.max(...entries.map(e => e.weight), 1);
-  const minWeight = Math.min(...entries.map(e => e.weight), 1);
-  const range = maxWeight - minWeight || 1;
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -103,22 +100,7 @@ export default function WeightPage() {
         <div className="bg-dark-800 rounded-2xl border border-dark-700 p-6">
           <h2 className="text-lg font-semibold text-white mb-4">Progress Chart</h2>
           {entries.length > 0 ? (
-            <div className="h-48 flex items-end gap-1">
-              {entries.slice(-30).map((entry) => {
-                const height = ((entry.weight - minWeight) / range) * 100;
-                return (
-                  <div
-                    key={entry.id}
-                    className="flex-1 bg-primary/80 hover:bg-primary rounded-t transition-colors group relative"
-                    style={{ height: `${Math.max(height, 5)}%` }}
-                  >
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-dark-700 rounded text-xs text-white opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
-                      {entry.weight} lbs
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <WeightChart entries={entries} />
           ) : (
             <div className="h-48 flex flex-col items-center justify-center text-gray-500">
               <svg className="w-12 h-12 mb-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,10 +109,12 @@ export default function WeightPage() {
               <p className="text-sm">Log your first weight to see progress</p>
             </div>
           )}
-          <div className="flex justify-between mt-2 text-xs text-gray-500">
-            <span>{entries.length > 0 ? formatDate(entries[0].date) : ''}</span>
-            <span>{entries.length > 0 ? formatDate(entries[entries.length - 1].date) : ''}</span>
-          </div>
+          {entries.length > 0 && (
+            <div className="flex justify-between mt-4 text-xs text-gray-500">
+              <span>{formatDate(entries[0].date)}</span>
+              <span>{formatDate(entries[entries.length - 1].date)}</span>
+            </div>
+          )}
         </div>
       </div>
 

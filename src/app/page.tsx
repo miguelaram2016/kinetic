@@ -300,7 +300,7 @@ export default function DashboardPage() {
       <div className="bg-dark-800 rounded-2xl p-6 border border-dark-700">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-white">Recent Activity</h2>
-          <Link href="/calendar" className="text-primary hover:text-primary-400 text-sm font-medium">
+          <Link href="/history" className="text-primary hover:text-primary-400 text-sm font-medium">
             View All
           </Link>
         </div>

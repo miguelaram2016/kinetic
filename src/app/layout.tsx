@@ -11,6 +11,7 @@ const navItems = [
   { href: '/reference', label: 'Reference', icon: 'book' },
   { href: '/weight', label: 'Weight', icon: 'scale' },
   { href: '/food', label: 'Food Log', icon: 'food' },
+  { href: '/history', label: 'History', icon: 'clock' },
   { href: '/programs', label: 'Programs', icon: 'dumbbell' },
 ];
 
@@ -19,6 +20,7 @@ const mobileNavItems = [
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
   { href: '/reference', label: 'Reference', icon: 'book' },
   { href: '/food', label: 'Food', icon: 'food' },
+  { href: '/history', label: 'History', icon: 'clock' },
   { href: '/programs', label: 'More', icon: 'dumbbell' },
 ];
 
@@ -58,6 +60,12 @@ function NavIcon({ icon, className }: { icon: string; className?: string }) {
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      );
+    case 'clock':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       );
     default:
@@ -104,18 +112,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
               <span className="text-lg font-bold text-white">Kinetic</span>
             </Link>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-gray-400 hover:text-white"
-            >
+            <Link href="/profile" className="p-2 text-gray-400 hover:text-white">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-            </button>
+            </Link>
           </header>
 
           {/* Mobile Menu Overlay */}
