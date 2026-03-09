@@ -67,6 +67,71 @@ export default function DashboardPage() {
         <p className="text-gray-400 mt-1">Welcome back! Let&apos;s crush today&apos;s workout.</p>
       </div>
 
+      {/* Quick Actions - Show when no recent activity */}
+      {recentWorkouts.length === 0 && (
+        <div className="bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl p-6 border border-primary/20">
+          <h2 className="text-lg font-semibold text-white mb-4">🚀 Quick Start</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Link
+              href="/calendar"
+              className="flex items-center gap-3 p-4 bg-dark-800/50 hover:bg-dark-700 rounded-xl transition-colors"
+            >
+              <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-medium">Schedule</p>
+                <p className="text-gray-400 text-sm">Plan a workout</p>
+              </div>
+            </Link>
+            <Link
+              href="/reference"
+              className="flex items-center gap-3 p-4 bg-dark-800/50 hover:bg-dark-700 rounded-xl transition-colors"
+            >
+              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-medium">Exercises</p>
+                <p className="text-gray-400 text-sm">Browse library</p>
+              </div>
+            </Link>
+            <Link
+              href="/programs"
+              className="flex items-center gap-3 p-4 bg-dark-800/50 hover:bg-dark-700 rounded-xl transition-colors"
+            >
+              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-medium">Programs</p>
+                <p className="text-gray-400 text-sm">Start a plan</p>
+              </div>
+            </Link>
+            <Link
+              href="/weight"
+              className="flex items-center gap-3 p-4 bg-dark-800/50 hover:bg-dark-700 rounded-xl transition-colors"
+            >
+              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-medium">Track Weight</p>
+                <p className="text-gray-400 text-sm">Log progress</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         <div className="bg-dark-800 rounded-2xl p-6 border border-dark-700">

@@ -88,6 +88,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#6366F1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body className="bg-dark-900">
         <div className="min-h-screen bg-dark-900 flex flex-col lg:flex-row">
           {/* Mobile Header */}
