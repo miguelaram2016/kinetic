@@ -12,21 +12,29 @@ const handler = NextAuth({
         name: { label: "Name", type: "text" },
       },
       async authorize(credentials) {
+        console.log("Authorize called with:", credentials?.email);
+        
         if (!credentials?.email || !credentials?.name) {
+          console.log("Missing credentials");
           return null;
         }
 
         try {
+          console.log("Connecting to MongoDB...");
           await dbConnect();
+          console.log("Connected to MongoDB");
           
           let user = await User.findOne({ email: credentials.email.toLowerCase() });
+          console.log("User found:", user);
           
-          // Auto-create if doesn't exist (for seamless sign up)
+          // Auto-create if doesn't exist
           if (!user) {
+            console.log("Creating new user...");
             user = await User.create({
               email: credentials.email.toLowerCase(),
               name: credentials.name,
             });
+            console.log("User created:", user);
           }
 
           return {
@@ -63,6 +71,7 @@ const handler = NextAuth({
     maxAge: 30 * 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
 });
 
 export { handler as GET, handler as POST };

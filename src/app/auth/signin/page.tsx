@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
@@ -9,6 +8,7 @@ export default function SignInPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,26 +17,38 @@ export default function SignInPage() {
     setLoading(true);
     setError('');
 
-    if (!email || !name) {
+    if (!email || !name || !password) {
       setError('Please fill in all fields');
       setLoading(false);
       return;
     }
 
+    if (password.length < 4) {
+      setError('Password must be at least 4 characters');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const result = await signIn('credentials', {
-        email,
-        name,
-        redirect: false,
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name, password }),
       });
 
-      if (result?.error) {
-        setError('Authentication failed. Please try again.');
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Authentication failed');
         setLoading(false);
-      } else {
-        // Success - redirect
-        router.push('/');
+        return;
       }
+
+      // Store user info in localStorage
+      localStorage.setItem('kinetic_user', JSON.stringify(data.user));
+      
+      // Redirect to dashboard
+      router.push('/');
     } catch (err) {
       console.error('Sign in error:', err);
       setError('Something went wrong. Please try again.');
@@ -88,7 +100,7 @@ export default function SignInPage() {
         </div>
 
         <div className="bg-dark-800 rounded-2xl border border-dark-700 p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">
                 Email
@@ -119,6 +131,22 @@ export default function SignInPage() {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="••••••••"
+                required
+                disabled={loading}
+                minLength={4}
+              />
+            </div>
+
             {error && (
               <p className="text-red-400 text-sm">{error}</p>
             )}
@@ -136,7 +164,7 @@ export default function SignInPage() {
 
           <div className="mt-6 pt-6 border-t border-dark-700">
             <p className="text-gray-500 text-sm text-center">
-              🔒 Your data is stored securely in MongoDB
+              🔒 Your password is securely stored and encrypted
             </p>
           </div>
         </div>

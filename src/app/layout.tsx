@@ -3,8 +3,12 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { AuthProvider } from '@/components/AuthProvider';
 import './globals.css';
+
+interface User {
+  name: string;
+  email: string;
+}
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: 'home' },
@@ -78,9 +82,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    // Load user from localStorage
+    const stored = localStorage.getItem('kinetic_user');
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse user:', e);
+      }
+    }
   }, []);
 
   if (!mounted) {
@@ -104,7 +118,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-dark-900">
-        <AuthProvider>
         <div className="min-h-screen bg-dark-900 flex flex-col lg:flex-row">
           {/* Mobile Header */}
           <header className="lg:hidden bg-dark-800 border-b border-dark-700 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
@@ -146,15 +159,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </nav>
               {/* User section in mobile menu */}
               <div className="p-4 border-t border-dark-700 mt-4">
-                <div className="flex items-center gap-3 px-4 py-3">
-                  <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center">
-                    <span className="text-gray-400">👤</span>
+                {user ? (
+                  <Link href="/profile" className="flex items-center gap-3 px-4 py-3 hover:bg-dark-700 rounded-xl transition-colors">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold">{user.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-medium text-sm">{user.name}</p>
+                      <p className="text-gray-500 text-xs">View profile</p>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center">
+                      <span className="text-gray-400">?</span>
+                    </div>
+                    <Link 
+                      href="/auth/signin" 
+                      className="flex-1 text-center bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                    >
+                      Sign In
+                    </Link>
                   </div>
-                  <div>
-                    <p className="text-white font-medium text-sm">Guest User</p>
-                    <p className="text-gray-500 text-xs">Free Plan</p>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           )}
@@ -194,15 +221,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* User section */}
             <div className="p-4 border-t border-dark-700">
-              <div className="flex items-center gap-3 px-4 py-3">
-                <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center">
-                  <span className="text-gray-400">👤</span>
+              {user ? (
+                <Link href="/profile" className="flex items-center gap-3 px-4 py-3 hover:bg-dark-700 rounded-xl transition-colors">
+                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold">{user.name.charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm">{user.name}</p>
+                    <p className="text-gray-500 text-xs">View profile</p>
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center">
+                    <span className="text-gray-400">?</span>
+                  </div>
+                  <Link 
+                    href="/auth/signin" 
+                    className="flex-1 text-center bg-primary hover:bg-primary-600 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors"
+                  >
+                    Sign In
+                  </Link>
                 </div>
-                <div>
-                  <p className="text-white font-medium text-sm">Guest User</p>
-                  <p className="text-gray-500 text-xs">Free Plan</p>
-                </div>
-              </div>
+              )}
             </div>
           </aside>
 
@@ -236,7 +277,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </nav>
         </div>
-        </AuthProvider>
       </body>
     </html>
   );

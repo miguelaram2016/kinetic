@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useWorkouts } from '@/lib/store';
 import { Workout } from '@/lib/types';
 import ExerciseDetail from '@/components/ExerciseDetail';
+import VideoRecorder from '@/components/VideoRecorder';
 
 const getWorkoutTimerKey = (workoutId: string) => `kinetic_workout_start_${workoutId}`;
 
@@ -20,6 +21,7 @@ export default function WorkoutPage() {
   const [restRemaining, setRestRemaining] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+  const [showVideoRecorder, setShowVideoRecorder] = useState(false);
   const startTimeRef = useRef<number | null>(null);
 
   // Load persisted start time from localStorage
@@ -398,6 +400,18 @@ export default function WorkoutPage() {
         ))}
       </div>
 
+      {/* Video Recording Button */}
+      <div className="fixed bottom-24 right-4 z-40">
+        <button
+          onClick={() => setShowVideoRecorder(true)}
+          className="w-14 h-14 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+        >
+          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="8" />
+          </svg>
+        </button>
+      </div>
+
       <div className="mt-8 sticky bottom-4">
         <button
           onClick={handleFinishWorkout}
@@ -459,6 +473,44 @@ export default function WorkoutPage() {
             >
               Skip
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Video Recorder Modal */}
+      {showVideoRecorder && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-800 rounded-2xl border border-dark-700 p-4 w-full max-w-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">Record Your Set</h3>
+              <button
+                onClick={() => setShowVideoRecorder(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <VideoRecorder 
+              onVideoRecorded={(blob) => {
+                // Save video to localStorage
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  const videos = JSON.parse(localStorage.getItem('kinetic_videos') || '[]');
+                  videos.push({
+                    data: reader.result,
+                    workoutId: workout?.id,
+                    exercise: workout?.exercises[0]?.name,
+                    date: new Date().toISOString()
+                  });
+                  localStorage.setItem('kinetic_videos', JSON.stringify(videos));
+                };
+                reader.readAsDataURL(blob);
+                setShowVideoRecorder(false);
+                alert('Video saved! You can review it in your workout history.');
+              }} 
+            />
           </div>
         </div>
       )}

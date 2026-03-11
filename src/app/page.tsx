@@ -38,9 +38,19 @@ export default function DashboardPage() {
   const { entries: foodEntries } = useFood();
   const { programs } = usePrograms();
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<{name: string; email: string} | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    // Load user from localStorage
+    const stored = localStorage.getItem('kinetic_user');
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse user:', e);
+      }
+    }
   }, []);
 
   if (!mounted || workoutsLoading) {
@@ -64,7 +74,9 @@ export default function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400 mt-1">Welcome back! Let&apos;s crush today&apos;s workout.</p>
+        <p className="text-gray-400 mt-1">
+          Hi {user?.name || 'there'}! {user ? 'Welcome back!' : "Let's crush today's workout."}
+        </p>
       </div>
 
       {/* Quick Actions - Show when no recent activity */}
