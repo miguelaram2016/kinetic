@@ -345,6 +345,7 @@ export default function WorkoutPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-white">{exercise.name}</h3>
+                  {!hiddenSets[exercise.id] && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {(() => {
                       const ex = exercisesData.exercises.find((e: any) => e.name === exercise.name);
@@ -353,6 +354,7 @@ export default function WorkoutPage() {
                       )) : null;
                     })()}
                   </div>
+                  )}
                 </div>
                 <button
                   onClick={() => {
@@ -371,8 +373,8 @@ export default function WorkoutPage() {
               </div>
             </div>
 
-            {/* Exercise Details - Brief (level: 'brief') */}
-            {expandedExercise?.id === exercise.id && expandedExercise.level === 'brief' && (
+            {/* Exercise Details - Brief - hide when sets hidden */}
+            {!hiddenSets[exercise.id] && expandedExercise?.id === exercise.id && expandedExercise.level === 'brief' && (
               <div className="p-4 border-b border-dark-700 bg-dark-800/50">
                 <div className="flex flex-wrap gap-2 mb-3">
                   {(() => {
@@ -395,8 +397,8 @@ export default function WorkoutPage() {
               </div>
             )}
 
-            {/* Exercise Details - Full (level: 'full') */}
-            {expandedExercise?.id === exercise.id && expandedExercise.level === 'full' && (
+            {/* Exercise Details - Full - hide when sets hidden */}
+            {!hiddenSets[exercise.id] && expandedExercise?.id === exercise.id && expandedExercise.level === 'full' && (
               <div className="p-4 border-b border-dark-700 bg-dark-800/50">
                 <ExerciseDetail exerciseName={exercise.name} compact />
               </div>
