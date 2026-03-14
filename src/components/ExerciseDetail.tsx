@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { getExerciseByName } from '@/lib/exercise-utils';
 
 interface ExerciseDetailProps {
@@ -9,7 +8,6 @@ interface ExerciseDetailProps {
 }
 
 export default function ExerciseDetail({ exerciseName, compact = false }: ExerciseDetailProps) {
-  const [expanded, setExpanded] = useState(false);
   const exercise = getExerciseByName(exerciseName);
 
   if (!exercise) {
@@ -22,21 +20,51 @@ export default function ExerciseDetail({ exerciseName, compact = false }: Exerci
 
   if (compact) {
     return (
-      <div className="text-sm">
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="text-primary hover:text-primary-400 text-xs flex items-center gap-1"
-        >
-          {expanded ? '▼' : '▶'} View details
-        </button>
-        {expanded && (
-          <div className="mt-2 text-gray-300 text-xs">
-            {exercise.instructions.slice(0, 2).map((step, i) => (
-              <p key={i} className="mb-1">• {step}</p>
+      <div className="text-sm space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {exercise.muscleGroups.map(m => (
+            <span key={m} className="text-xs px-2 py-0.5 bg-primary/20 text-primary rounded">
+              {m}
+            </span>
+          ))}
+          <span className={`text-xs px-2 py-0.5 rounded ${
+            exercise.difficulty === 'beginner' ? 'bg-green-900 text-green-300' :
+            exercise.difficulty === 'intermediate' ? 'bg-yellow-900 text-yellow-300' :
+            'bg-red-900 text-red-300'
+          }`}>
+            {exercise.difficulty}
+          </span>
+        </div>
+        
+        <div className="text-gray-300 text-xs space-y-1">
+          <p className="font-medium text-gray-400">Instructions:</p>
+          {exercise.instructions.map((step, i) => (
+            <p key={i} className="mb-1">• {step}</p>
+          ))}
+        </div>
+
+        {exercise.tips.length > 0 && (
+          <div className="text-gray-400 text-xs">
+            <p className="font-medium text-gray-400 mb-1">Tips:</p>
+            {exercise.tips.map((tip, i) => (
+              <p key={i} className="mb-1">★ {tip}</p>
             ))}
-            {exercise.instructions.length > 2 && (
-              <p className="text-gray-500">+{exercise.instructions.length - 2} more steps</p>
-            )}
+          </div>
+        )}
+
+        {/* Video Embed */}
+        {exercise.videoUrl && (
+          <div>
+            <p className="text-xs font-medium text-gray-400 mb-2">Video Guide</p>
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-dark-900">
+              <iframe
+                src={exercise.videoUrl.replace('watch?v=', 'embed/')}
+                className="absolute inset-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={exercise.name}
+              />
+            </div>
           </div>
         )}
       </div>

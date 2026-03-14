@@ -83,6 +83,7 @@ export default function ReferencePage() {
   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>('');
   const [selectedEquipment, setSelectedEquipment] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
+  const [sortBy, setSortBy] = useState<'name' | 'difficulty'>('name');
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   
   // Favorites
@@ -105,9 +106,9 @@ export default function ReferencePage() {
     localStorage.setItem('kinetic_exercise_favorites', JSON.stringify(newFavorites));
   };
 
-  // Filtered exercises
+  // Filtered and sorted exercises
   const filteredExercises = useMemo(() => {
-    return exercisesData.exercises.filter((exercise: Exercise) => {
+    let filtered = exercisesData.exercises.filter((exercise: Exercise) => {
       const matchesSearch = !searchQuery || 
         exercise.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesMuscleGroup = !selectedMuscleGroup || 
@@ -119,7 +120,20 @@ export default function ReferencePage() {
       
       return matchesSearch && matchesMuscleGroup && matchesEquipment && matchesDifficulty;
     });
-  }, [searchQuery, selectedMuscleGroup, selectedEquipment, selectedDifficulty]);
+
+    // Sort
+    if (sortBy === 'name') {
+      filtered = [...filtered].sort((a: Exercise, b: Exercise) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'difficulty') {
+      const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
+      filtered = [...filtered].sort((a: Exercise, b: Exercise) => 
+        (difficultyOrder[a.difficulty as keyof typeof difficultyOrder] || 2) - 
+        (difficultyOrder[b.difficulty as keyof typeof difficultyOrder] || 2)
+      );
+    }
+
+    return filtered;
+  }, [searchQuery, selectedMuscleGroup, selectedEquipment, selectedDifficulty, sortBy]);
 
   // Get exercise by ID
   const getExerciseById = (id: string): Exercise | undefined => {
@@ -225,6 +239,15 @@ export default function ReferencePage() {
                     {diff.charAt(0).toUpperCase() + diff.slice(1)}
                   </option>
                 ))}
+              </select>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'name' | 'difficulty')}
+                className="px-4 py-2 bg-dark-800 border border-dark-700 rounded-xl text-white focus:outline-none focus:border-primary"
+              >
+                <option value="name">Sort: A-Z</option>
+                <option value="difficulty">Sort: Difficulty</option>
               </select>
 
               {(selectedMuscleGroup || selectedEquipment || selectedDifficulty || searchQuery) && (
@@ -350,21 +373,82 @@ export default function ReferencePage() {
                   </div>
                 )}
 
-                {/* Video Link */}
+                {/* Video Embed */}
                 {selectedExercise.videoUrl && (
-                  <a
-                    href={selectedExercise.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-primary hover:text-primary-400"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Watch Video Tutorial
-                  </a>
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium text-gray-400 mb-2">Video Tutorial</h4>
+                    <div className="relative aspect-video rounded-xl overflow-hidden bg-dark-900">
+                      <iframe
+                        src={selectedExercise.videoUrl.replace('watch?v=', 'embed/')}
+                        className="absolute inset-0 w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={selectedExercise.name}
+                      />
+                    </div>
+                  </div>
                 )}
+
+                {/* Substitutions - Same muscle, different equipment */}
+                {(() => {
+                  const substitutions = exercisesData.exercises.filter((e: Exercise) => 
+                    e.id !== selectedExercise.id &&
+                    e.muscleGroups.some(mg => selectedExercise.muscleGroups.includes(mg)) &&
+                    !e.equipment.some(eq => selectedExercise.equipment.includes(eq))
+                  ).slice(0, 6);
+                  
+                  if (substitutions.length === 0) return null;
+                  
+                  return (
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold text-white mb-3">
+                        🔄 Substitutions (Same muscles, different equipment)
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {substitutions.map((sub: Exercise) => (
+                          <button
+                            key={sub.id}
+                            onClick={() => setSelectedExercise(sub)}
+                            className="text-left p-3 bg-dark-700/50 hover:bg-dark-700 rounded-lg transition-colors"
+                          >
+                            <p className="text-white font-medium text-sm">{sub.name}</p>
+                            <p className="text-gray-400 text-xs">{sub.equipment.join(', ')}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* All exercises targeting same muscles */}
+                {(() => {
+                  const sameMuscles = exercisesData.exercises.filter((e: Exercise) => 
+                    e.id !== selectedExercise.id &&
+                    e.muscleGroups.some(mg => selectedExercise.muscleGroups.includes(mg))
+                  ).slice(0, 6);
+                  
+                  if (sameMuscles.length === 0) return null;
+                  
+                  return (
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold text-white mb-3">
+                        💪 More {selectedExercise.muscleGroups[0]} exercises
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {sameMuscles.map((ex: Exercise) => (
+                          <button
+                            key={ex.id}
+                            onClick={() => setSelectedExercise(ex)}
+                            className="text-left p-3 bg-dark-700/50 hover:bg-dark-700 rounded-lg transition-colors"
+                          >
+                            <p className="text-white font-medium text-sm">{ex.name}</p>
+                            <p className="text-gray-400 text-xs">{ex.equipment.join(', ')}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           ) : (

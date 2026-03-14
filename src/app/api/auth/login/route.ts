@@ -3,7 +3,6 @@ import dbConnect from '@/lib/db/mongodb';
 import { User } from '@/lib/models/User';
 
 function simpleHash(password: string): string {
-  // Simple hash for demo - in production use bcrypt
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
     const char = password.charCodeAt(i);
@@ -27,8 +26,13 @@ export async function POST(request: Request) {
     let user = await User.findOne({ email: email.toLowerCase() });
     
     if (user) {
-      // Verify password
-      if (user.password !== simpleHash(password)) {
+      // User exists - verify or set password
+      if (!user.password) {
+        // No password set - set it now
+        user.password = simpleHash(password);
+        user.name = name; // Update name too
+        await user.save();
+      } else if (user.password !== simpleHash(password)) {
         return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
       }
     } else {
@@ -40,7 +44,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // Return user info (without password)
+    // Return user info
     return NextResponse.json({ 
       success: true, 
       user: {

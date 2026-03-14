@@ -7,6 +7,7 @@ import { useWorkouts } from '@/lib/store';
 import { Workout } from '@/lib/types';
 import ExerciseDetail from '@/components/ExerciseDetail';
 import VideoRecorder from '@/components/VideoRecorder';
+import exercisesData from '@/data/exercises.json';
 
 const getWorkoutTimerKey = (workoutId: string) => `kinetic_workout_start_${workoutId}`;
 
@@ -22,6 +23,9 @@ export default function WorkoutPage() {
   const [mounted, setMounted] = useState(false);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [showVideoRecorder, setShowVideoRecorder] = useState(false);
+  const [showAddExercise, setShowAddExercise] = useState(false);
+  const [exerciseSearch, setExerciseSearch] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
   const startTimeRef = useRef<number | null>(null);
 
   // Load persisted start time from localStorage
@@ -72,14 +76,14 @@ export default function WorkoutPage() {
   }, [mounted, params.id, workouts, loadPersistedStartTime, persistStartTime]);
 
   useEffect(() => {
-    if (!startTimeRef.current || workout?.completed) return;
+    if (!startTimeRef.current || workout?.completed || isPaused) return;
     
     const interval = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTimeRef.current!) / 1000));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [workout?.completed]);
+  }, [workout?.completed, isPaused]);
 
   useEffect(() => {
     if (showRestTimer && restRemaining > 0) {
@@ -175,6 +179,28 @@ export default function WorkoutPage() {
     router.push('/');
   };
 
+  const handleAddSet = (exerciseIndex: number) => {
+    if (!workout) return;
+    const newSets = [...workout.exercises];
+    newSets[exerciseIndex].sets.push({
+      id: `set-${Date.now()}`,
+      weight: 0,
+      reps: 0,
+      completed: false,
+    });
+    setWorkout({ ...workout, exercises: newSets });
+    updateWorkout(workout.id, { exercises: newSets });
+  };
+
+  const handleRemoveSet = (exerciseIndex: number, setIndex: number) => {
+    if (!workout) return;
+    if (workout.exercises[exerciseIndex].sets.length <= 1) return; // Keep at least 1 set
+    const newSets = [...workout.exercises];
+    newSets[exerciseIndex].sets.splice(setIndex, 1);
+    setWorkout({ ...workout, exercises: newSets });
+    updateWorkout(workout.id, { exercises: newSets });
+  };
+
   const getCompletedSets = () => {
     if (!workout) return 0;
     return workout.exercises.reduce((acc, ex) => 
@@ -185,6 +211,24 @@ export default function WorkoutPage() {
   const getTotalSets = () => {
     if (!workout) return 0;
     return workout.exercises.reduce((acc, ex) => acc + ex.sets.length, 0);
+  };
+
+  const getTotalVolume = () => {
+    if (!workout) return 0;
+    return workout.exercises.reduce((acc, ex) => {
+      return acc + ex.sets.reduce((setAcc, set) => {
+        return setAcc + (set.completed ? set.weight * set.reps : 0);
+      }, 0);
+    }, 0);
+  };
+
+  const getTotalReps = () => {
+    if (!workout) return 0;
+    return workout.exercises.reduce((acc, ex) => {
+      return acc + ex.sets.reduce((setAcc, set) => {
+        return setAcc + (set.completed ? set.reps : 0);
+      }, 0);
+    }, 0);
   };
 
   const progress = getTotalSets() > 0 ? (getCompletedSets() / getTotalSets()) * 100 : 0;
@@ -239,25 +283,69 @@ export default function WorkoutPage() {
           </Link>
           <h1 className="text-xl md:text-2xl font-bold text-white">{workout.name}</h1>
         </div>
-        <div className="text-left sm:text-right">
-          <p className="text-gray-400 text-sm">Duration</p>
+        <div className="text-left sm:text-right space-y-1">
+          <div className="flex items-center gap-2 sm:justify-end">
+            <p className="text-gray-400 text-sm">Duration</p>
+            <button
+              onClick={() => setIsPaused(!isPaused)}
+              className={`p-1 rounded ${isPaused ? 'text-green-400' : 'text-gray-400'}`}
+            >
+              {isPaused ? (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+              )}
+            </button>
+          </div>
           <p className="text-lg md:text-xl font-bold text-white">{formatTime(elapsedTime)}</p>
+          {getTotalVolume() > 0 && (
+            <p className="text-sm text-gray-400">
+              {getTotalVolume().toLocaleString()} lbs • {getTotalReps()} reps
+            </p>
+          )}
         </div>
       </div>
 
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-400 text-sm">Progress</span>
-          <span className="text-white text-sm font-medium">
-            {getCompletedSets()} / {getTotalSets()} sets
-          </span>
-        </div>
-        <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-green-500 rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {workout.exercises.length > 0 ? (
+          <>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-gray-400 text-sm">Progress</span>
+              <span className="text-white text-sm font-medium">
+                {getCompletedSets()} / {getTotalSets()} sets
+              </span>
+            </div>
+            <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-green-500 rounded-full transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No exercises yet</h3>
+            <p className="text-gray-400 mb-4">Add exercises to start your workout</p>
+            <button
+              onClick={() => setShowAddExercise(true)}
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Add Exercise
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="space-y-6">
@@ -267,9 +355,27 @@ export default function WorkoutPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-white">{exercise.name}</h3>
-                  <p className="text-gray-500 text-sm">
-                    {exercise.sets.filter(s => s.completed).length} / {exercise.sets.length} sets completed
-                  </p>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {(() => {
+                      const ex = exercisesData.exercises.find((e: any) => e.name === exercise.name);
+                      return ex ? ex.equipment.slice(0, 3).map((eq: string) => (
+                        <span key={eq} className="text-xs px-2 py-0.5 bg-dark-600 text-gray-400 rounded">
+                          {eq}
+                        </span>
+                      )) : null;
+                    })()}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setExpandedExercise(expandedExercise === exercise.id ? null : exercise.id)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <svg className={`w-5 h-5 transition-transform ${expandedExercise === exercise.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
                 </div>
                 <button
                   onClick={() => setExpandedExercise(expandedExercise === exercise.id ? null : exercise.id)}
@@ -394,10 +500,36 @@ export default function WorkoutPage() {
                     </div>
                   </div>
                 ))}
+
+                {/* Set Management */}
+                <div className="flex gap-2 mt-3 pt-3 border-t border-dark-700">
+                  <button
+                    onClick={() => handleAddSet(exerciseIndex)}
+                    className="flex-1 py-2 bg-dark-700 hover:bg-dark-600 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    + Add Set
+                  </button>
+                  {exercise.sets.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveSet(exerciseIndex, exercise.sets.length - 1)}
+                      className="px-4 py-2 bg-dark-700 hover:bg-red-900/30 text-gray-400 hover:text-red-400 text-sm font-medium rounded-lg transition-colors"
+                    >
+                      - Remove Set
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ))}
+
+        {/* Add Exercise Button */}
+        <button
+          onClick={() => setShowAddExercise(true)}
+          className="w-full py-4 border-2 border-dashed border-dark-600 hover:border-primary rounded-xl text-gray-400 hover:text-primary font-medium transition-colors"
+        >
+          + Add Another Exercise
+        </button>
       </div>
 
       {/* Video Recording Button */}
@@ -501,7 +633,7 @@ export default function WorkoutPage() {
                   videos.push({
                     data: reader.result,
                     workoutId: workout?.id,
-                    exercise: workout?.exercises[0]?.name,
+                    exercise: workout?.exercises[0]?.name || 'Custom Exercise',
                     date: new Date().toISOString()
                   });
                   localStorage.setItem('kinetic_videos', JSON.stringify(videos));
@@ -511,6 +643,68 @@ export default function WorkoutPage() {
                 alert('Video saved! You can review it in your workout history.');
               }} 
             />
+          </div>
+        </div>
+      )}
+
+      {/* Add Exercise Modal */}
+      {showAddExercise && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-800 rounded-2xl border border-dark-700 w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-dark-700">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-white">Add Exercise</h3>
+                <button
+                  onClick={() => setShowAddExercise(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <input
+                type="text"
+                placeholder="Search exercises..."
+                value={exerciseSearch}
+                onChange={(e) => setExerciseSearch(e.target.value)}
+                className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-2">
+                {exercisesData.exercises
+                  .filter((ex: any) => !exerciseSearch || ex.name.toLowerCase().includes(exerciseSearch.toLowerCase()))
+                  .slice(0, 20)
+                  .map((exercise: any) => (
+                    <button
+                      key={exercise.id}
+                      onClick={() => {
+                        // Add exercise to workout with default 3 sets
+                        const newExercise = {
+                          id: `ex-${Date.now()}`,
+                          name: exercise.name,
+                          sets: [
+                            { id: `set-${Date.now()}-1`, weight: 0, reps: 0, completed: false },
+                            { id: `set-${Date.now()}-2`, weight: 0, reps: 0, completed: false },
+                            { id: `set-${Date.now()}-3`, weight: 0, reps: 0, completed: false },
+                          ],
+                        };
+                        const updated = { ...workout, exercises: [...workout.exercises, newExercise] };
+                        setWorkout(updated);
+                        updateWorkout(workout.id, { exercises: updated.exercises });
+                        setShowAddExercise(false);
+                        setExerciseSearch('');
+                      }}
+                      className="w-full p-4 bg-dark-700/50 hover:bg-dark-700 rounded-xl text-left transition-colors"
+                    >
+                      <p className="text-white font-medium">{exercise.name}</p>
+                      <p className="text-gray-400 text-sm">{exercise.equipment.join(', ')}</p>
+                    </button>
+                  ))}
+              </div>
+            </div>
           </div>
         </div>
       )}

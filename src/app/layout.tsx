@@ -13,6 +13,7 @@ interface User {
 const navItems = [
   { href: '/', label: 'Dashboard', icon: 'home' },
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
+  { href: '/volume', label: 'Volume', icon: 'chart' },
   { href: '/reference', label: 'Reference', icon: 'book' },
   { href: '/weight', label: 'Weight', icon: 'scale' },
   { href: '/food', label: 'Food Log', icon: 'food' },
@@ -23,9 +24,9 @@ const navItems = [
 const mobileNavItems = [
   { href: '/', label: 'Home', icon: 'home' },
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
+  { href: '/volume', label: 'Volume', icon: 'chart' },
   { href: '/reference', label: 'Reference', icon: 'book' },
   { href: '/food', label: 'Food', icon: 'food' },
-  { href: '/history', label: 'History', icon: 'clock' },
   { href: '/programs', label: 'More', icon: 'dumbbell' },
 ];
 
@@ -41,6 +42,12 @@ function NavIcon({ icon, className }: { icon: string; className?: string }) {
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      );
+    case 'chart':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       );
     case 'scale':
@@ -114,6 +121,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#6366F1" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>

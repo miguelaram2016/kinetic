@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useWorkouts, useStats, useWeight, useFood, usePrograms } from '@/lib/store';
 import { Workout } from '@/lib/types';
+import workoutsData from '@/data/workouts.json';
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -39,6 +41,10 @@ export default function DashboardPage() {
   const { programs } = usePrograms();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<{name: string; email: string} | null>(null);
+  const [showStartWorkout, setShowStartWorkout] = useState(false);
+  const [workoutMode, setWorkoutMode] = useState<'custom' | 'saved' | null>(null);
+  const [savedWorkoutSearch, setSavedWorkoutSearch] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -52,6 +58,83 @@ export default function DashboardPage() {
       }
     }
   }, []);
+
+  // Get user's saved workouts (from localStorage)
+  const savedWorkouts = useMemo(() => {
+    const saved = localStorage.getItem('kinetic_workouts');
+    return saved ? JSON.parse(saved) : [];
+  }, [mounted]);
+
+  // Get workouts from programs
+  const programWorkouts = useMemo(() => {
+    const activeProgram = programs.find(p => p.isActive) || programs[0];
+    if (!activeProgram) return [];
+    
+    const workoutIds = activeProgram.phases[activeProgram.currentPhase]?.workouts || [];
+    return workoutIds.map((id: string) => {
+      const template = workoutsData.workouts.find((w: any) => w.id === id);
+      return template ? { ...template, source: 'program' } : null;
+    }).filter(Boolean);
+  }, [programs]);
+
+  // Combine and dedupe workouts
+  const allSavedWorkouts = useMemo(() => {
+    const combined = [...savedWorkouts, ...programWorkouts];
+    const seen = new Set();
+    return combined.filter((w: any) => {
+      if (seen.has(w.id)) return false;
+      seen.add(w.id);
+      return true;
+    });
+  }, [savedWorkouts, programWorkouts]);
+
+  const filteredWorkouts = useMemo(() => {
+    if (!savedWorkoutSearch) return allSavedWorkouts;
+    return allSavedWorkouts.filter((w: any) => 
+      w.name.toLowerCase().includes(savedWorkoutSearch.toLowerCase())
+    );
+  }, [allSavedWorkouts, savedWorkoutSearch]);
+
+  const handleStartCustomWorkout = () => {
+    // Create a new empty workout and redirect to it
+    const newWorkout = {
+      id: `workout-${Date.now()}`,
+      name: 'Custom Workout',
+      date: new Date().toISOString().split('T')[0],
+      scheduledDate: new Date().toISOString(),
+      exercises: [],
+      completed: false,
+    };
+    
+    // Save to localStorage
+    const workouts = JSON.parse(localStorage.getItem('kinetic_workouts') || '[]');
+    workouts.push(newWorkout);
+    localStorage.setItem('kinetic_workouts', JSON.stringify(workouts));
+    
+    setShowStartWorkout(false);
+    router.push(`/workout/${newWorkout.id}`);
+  };
+
+  const handleStartSavedWorkout = (workout: any) => {
+    // Create a copy of the workout for today
+    const newWorkout = {
+      ...workout,
+      id: `workout-${Date.now()}`,
+      date: new Date().toISOString().split('T')[0],
+      scheduledDate: new Date().toISOString(),
+      completed: false,
+      completedAt: null,
+      duration: null,
+    };
+    
+    // Save to localStorage
+    const workouts = JSON.parse(localStorage.getItem('kinetic_workouts') || '[]');
+    workouts.push(newWorkout);
+    localStorage.setItem('kinetic_workouts', JSON.stringify(workouts));
+    
+    setShowStartWorkout(false);
+    router.push(`/workout/${newWorkout.id}`);
+  };
 
   if (!mounted || workoutsLoading) {
     return (
@@ -78,6 +161,19 @@ export default function DashboardPage() {
           Hi {user?.name || 'there'}! {user ? 'Welcome back!' : "Let's crush today's workout."}
         </p>
       </div>
+
+      {/* Start Workout Button */}
+      <button
+        onClick={() => setShowStartWorkout(true)}
+        className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600 text-white font-bold py-4 px-6 rounded-2xl transition-all transform hover:scale-[1.02] shadow-lg shadow-primary/25"
+      >
+        <div className="flex items-center justify-center gap-3">
+          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <span className="text-xl">Start Workout</span>
+        </div>
+      </button>
 
       {/* Quick Actions - Show when no recent activity */}
       {recentWorkouts.length === 0 && (
@@ -401,6 +497,121 @@ export default function DashboardPage() {
           <span className="text-white font-medium">Programs</span>
         </Link>
       </div>
+
+      {/* Start Workout Modal */}
+      {showStartWorkout && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-800 rounded-2xl border border-dark-700 w-full max-w-lg max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-white mb-6">Start Workout</h2>
+              
+              {!workoutMode ? (
+                // Choose: Custom or Saved
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setWorkoutMode('custom')}
+                    className="w-full p-6 bg-gradient-to-r from-primary/20 to-purple-500/20 hover:from-primary/30 hover:to-purple-500/30 border border-primary/30 rounded-xl transition-all text-left"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">Custom Workout</h3>
+                        <p className="text-gray-400 text-sm">Create your own workout with exercises you choose</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setWorkoutMode('saved')}
+                    className="w-full p-6 bg-gradient-to-r from-green-500/20 to-blue-500/20 hover:from-green-500/30 hover:to-blue-500/30 border border-green-500/30 rounded-xl transition-all text-left"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                        <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">Pick from Saved</h3>
+                        <p className="text-gray-400 text-sm">Choose a saved workout or from your program</p>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              ) : workoutMode === 'custom' ? (
+                // Custom workout
+                <div className="space-y-4">
+                  <button
+                    onClick={handleStartCustomWorkout}
+                    className="w-full py-4 bg-primary hover:bg-primary-600 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    Start Empty Workout
+                  </button>
+                  <p className="text-gray-400 text-sm text-center">
+                    You&apos;ll be able to add exercises after starting
+                  </p>
+                  <button
+                    onClick={() => setWorkoutMode(null)}
+                    className="w-full py-2 text-gray-400 hover:text-white"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              ) : (
+                // Saved workouts
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Search workouts..."
+                    value={savedWorkoutSearch}
+                    onChange={(e) => setSavedWorkoutSearch(e.target.value)}
+                    className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {filteredWorkouts.length > 0 ? (
+                      filteredWorkouts.map((workout: any) => (
+                        <button
+                          key={workout.id}
+                          onClick={() => handleStartSavedWorkout(workout)}
+                          className="w-full p-4 bg-dark-700/50 hover:bg-dark-700 rounded-xl text-left transition-colors"
+                        >
+                          <p className="text-white font-medium">{workout.name}</p>
+                          <p className="text-gray-400 text-sm">
+                            {workout.exercises?.length || 0} exercises • {workout.source === 'program' ? '📋 Program' : '💾 Saved'}
+                          </p>
+                        </button>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">No saved workouts found</p>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => { setWorkoutMode(null); setSavedWorkoutSearch(''); }}
+                    className="w-full py-2 text-gray-400 hover:text-white"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            <button
+              onClick={() => { setShowStartWorkout(false); setWorkoutMode(null); setSavedWorkoutSearch(''); }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
