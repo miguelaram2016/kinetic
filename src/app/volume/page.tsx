@@ -20,7 +20,7 @@ export default function VolumeLogPage() {
     const byDate: Record<string, { volume: number; workouts: number; date: string }> = {};
     
     completed.forEach(w => {
-      const date = w.completedAt?.split('T')[0] || w.date;
+      const date = w.completedAt?.split('T')[0] || w.scheduledDate;
       if (!byDate[date]) {
         byDate[date] = { volume: 0, workouts: 0, date };
       }
@@ -159,7 +159,7 @@ export default function VolumeLogPage() {
                   color: '#fff'
                 }}
                 labelFormatter={(d) => new Date(d).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                formatter={(value: number) => [formatVolume(value) + ' lbs', 'Volume']}
+                formatter={(value: any) => [formatVolume(Number(value || 0)) + ' lbs', 'Volume']}
               />
               <Bar dataKey="volume" fill="#6366F1" radius={[4, 4, 0, 0]} />
             </BarChart>
