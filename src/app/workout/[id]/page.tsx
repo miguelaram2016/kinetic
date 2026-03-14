@@ -7,6 +7,7 @@ import { useWorkouts } from '@/lib/store';
 import { Workout } from '@/lib/types';
 import ExerciseDetail from '@/components/ExerciseDetail';
 import VideoRecorder from '@/components/VideoRecorder';
+import exercisesData from '@/data/exercises.json';
 
 const getWorkoutTimerKey = (workoutId: string) => `kinetic_workout_start_${workoutId}`;
 
@@ -22,6 +23,9 @@ export default function WorkoutPage() {
   const [mounted, setMounted] = useState(false);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [showVideoRecorder, setShowVideoRecorder] = useState(false);
+  const [showAddExercise, setShowAddExercise] = useState(false);
+  const [exerciseSearch, setExerciseSearch] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
   const startTimeRef = useRef<number | null>(null);
 
   // Load persisted start time from localStorage
@@ -72,14 +76,14 @@ export default function WorkoutPage() {
   }, [mounted, params.id, workouts, loadPersistedStartTime, persistStartTime]);
 
   useEffect(() => {
-    if (!startTimeRef.current || workout?.completed) return;
+    if (!startTimeRef.current || workout?.completed || isPaused) return;
     
     const interval = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTimeRef.current!) / 1000));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [workout?.completed]);
+  }, [workout?.completed, isPaused]);
 
   useEffect(() => {
     if (showRestTimer && restRemaining > 0) {
@@ -187,6 +191,64 @@ export default function WorkoutPage() {
     return workout.exercises.reduce((acc, ex) => acc + ex.sets.length, 0);
   };
 
+  const getTotalVolume = () => {
+    if (!workout) return 0;
+    return workout.exercises.reduce((acc, ex) => {
+      return acc + ex.sets.reduce((setAcc, set) => {
+        return setAcc + (set.completed ? set.weight * set.reps : 0);
+      }, 0);
+    }, 0);
+  };
+
+  const getTotalReps = () => {
+    if (!workout) return 0;
+    return workout.exercises.reduce((acc, ex) => {
+      return acc + ex.sets.reduce((setAcc, set) => {
+        return setAcc + (set.completed ? set.reps : 0);
+      }, 0);
+    }, 0);
+  };
+
+  const handleAddSet = (exerciseIndex: number) => {
+    if (!workout) return;
+    const newSets = [...workout.exercises];
+    newSets[exerciseIndex].sets.push({
+      id: `set-${Date.now()}`,
+      weight: 0,
+      reps: 0,
+      completed: false,
+    });
+    setWorkout({ ...workout, exercises: newSets });
+    updateWorkout(workout.id, { exercises: newSets });
+  };
+
+  const handleRemoveSet = (exerciseIndex: number, setIndex: number) => {
+    if (!workout) return;
+    if (workout.exercises[exerciseIndex].sets.length <= 1) return;
+    const newSets = [...workout.exercises];
+    newSets[exerciseIndex].sets.splice(setIndex, 1);
+    setWorkout({ ...workout, exercises: newSets });
+    updateWorkout(workout.id, { exercises: newSets });
+  };
+
+  const handleAddExercise = (exerciseName: string) => {
+    if (!workout) return;
+    const newExercise = {
+      id: `ex-${Date.now()}`,
+      name: exerciseName,
+      sets: [
+        { id: `set-${Date.now()}-1`, weight: 0, reps: 0, completed: false },
+        { id: `set-${Date.now()}-2`, weight: 0, reps: 0, completed: false },
+        { id: `set-${Date.now()}-3`, weight: 0, reps: 0, completed: false },
+      ],
+    };
+    const newExercises = [...workout.exercises, newExercise];
+    setWorkout({ ...workout, exercises: newExercises });
+    updateWorkout(workout.id, { exercises: newExercises });
+    setShowAddExercise(false);
+    setExerciseSearch('');
+  };
+
   const progress = getTotalSets() > 0 ? (getCompletedSets() / getTotalSets()) * 100 : 0;
 
   if (workout.completed) {
@@ -239,9 +301,24 @@ export default function WorkoutPage() {
           </Link>
           <h1 className="text-xl md:text-2xl font-bold text-white">{workout.name}</h1>
         </div>
-        <div className="text-left sm:text-right">
-          <p className="text-gray-400 text-sm">Duration</p>
+        <div className="text-left sm:text-right space-y-1">
+          <div className="flex items-center gap-2 sm:justify-end">
+            <p className="text-gray-400 text-sm">Duration</p>
+            <button
+              onClick={() => setIsPaused(!isPaused)}
+              className="p-1 rounded text-gray-400 hover:text-white"
+            >
+              {isPaused ? (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              ) : (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              )}
+            </button>
+          </div>
           <p className="text-lg md:text-xl font-bold text-white">{formatTime(elapsedTime)}</p>
+          {getTotalVolume() > 0 && (
+            <p className="text-sm text-gray-400">{getTotalVolume().toLocaleString()} lbs • {getTotalReps()} reps</p>
+          )}
         </div>
       </div>
 
@@ -267,9 +344,14 @@ export default function WorkoutPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-white">{exercise.name}</h3>
-                  <p className="text-gray-500 text-sm">
-                    {exercise.sets.filter(s => s.completed).length} / {exercise.sets.length} sets completed
-                  </p>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {(() => {
+                      const ex = exercisesData.exercises.find((e: any) => e.name === exercise.name);
+                      return ex ? ex.equipment.slice(0, 3).map((eq: string) => (
+                        <span key={eq} className="text-xs px-2 py-0.5 bg-dark-600 text-gray-400 rounded">{eq}</span>
+                      )) : null;
+                    })()}
+                  </div>
                 </div>
                 <button
                   onClick={() => setExpandedExercise(expandedExercise === exercise.id ? null : exercise.id)}
@@ -398,6 +480,14 @@ export default function WorkoutPage() {
             </div>
           </div>
         ))}
+
+        {/* Add Another Exercise Button */}
+        <button
+          onClick={() => setShowAddExercise(true)}
+          className="w-full py-4 border-2 border-dashed border-dark-600 hover:border-primary rounded-xl text-gray-400 hover:text-primary font-medium transition-colors"
+        >
+          + Add Another Exercise
+        </button>
       </div>
 
       {/* Video Recording Button */}
@@ -501,7 +591,7 @@ export default function WorkoutPage() {
                   videos.push({
                     data: reader.result,
                     workoutId: workout?.id,
-                    exercise: workout?.exercises[0]?.name,
+                    exercise: workout?.exercises[0]?.name || 'Custom Exercise',
                     date: new Date().toISOString()
                   });
                   localStorage.setItem('kinetic_videos', JSON.stringify(videos));
@@ -511,6 +601,46 @@ export default function WorkoutPage() {
                 alert('Video saved! You can review it in your workout history.');
               }} 
             />
+          </div>
+        </div>
+      )}
+
+      {showAddExercise && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-800 rounded-2xl border border-dark-700 p-4 w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">Add Exercise</h3>
+              <button
+                onClick={() => { setShowAddExercise(false); setExerciseSearch(''); }}
+                className="text-gray-400 hover:text-white"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <input
+              type="text"
+              placeholder="Search exercises..."
+              value={exerciseSearch}
+              onChange={(e) => setExerciseSearch(e.target.value)}
+              className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-white mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <div className="flex-1 overflow-y-auto space-y-2">
+              {exercisesData.exercises
+                .filter((e: any) => e.name.toLowerCase().includes(exerciseSearch.toLowerCase()))
+                .slice(0, 20)
+                .map((exercise: any) => (
+                  <button
+                    key={exercise.name}
+                    onClick={() => handleAddExercise(exercise.name)}
+                    className="w-full p-3 bg-dark-700 hover:bg-dark-600 rounded-lg text-left transition-colors"
+                  >
+                    <p className="text-white font-medium">{exercise.name}</p>
+                    <p className="text-gray-500 text-sm">{exercise.equipment.slice(0, 2).join(', ')}</p>
+                  </button>
+                ))}
+            </div>
           </div>
         </div>
       )}
