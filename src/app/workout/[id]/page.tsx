@@ -21,7 +21,7 @@ export default function WorkoutPage() {
   const [restTime, setRestTime] = useState(90);
   const [restRemaining, setRestRemaining] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+  const [expandedExercise, setExpandedExercise] = useState<{id: string, level: 'brief' | 'full'} | null>(null);
   const [showVideoRecorder, setShowVideoRecorder] = useState(false);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [exerciseSearch, setExerciseSearch] = useState('');
@@ -354,16 +354,48 @@ export default function WorkoutPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setExpandedExercise(expandedExercise === exercise.id ? null : exercise.id)}
+                  onClick={() => {
+                    if (!expandedExercise || expandedExercise.id !== exercise.id) {
+                      setExpandedExercise({ id: exercise.id, level: 'brief' });
+                    } else if (expandedExercise.level === 'brief') {
+                      setExpandedExercise({ id: exercise.id, level: 'full' });
+                    } else {
+                      setExpandedExercise(null);
+                    }
+                  }}
                   className="text-primary hover:text-primary-400 text-sm flex items-center gap-1"
                 >
-                  {expandedExercise === exercise.id ? 'Hide' : 'Show'} details
+                  {expandedExercise?.id === exercise.id ? (expandedExercise.level === 'full' ? '▼ Less' : '▲ More') : '▲ Expand'}
                 </button>
               </div>
             </div>
 
-            {/* Exercise Details */}
-            {expandedExercise === exercise.id && (
+            {/* Exercise Details - Brief (level: 'brief') */}
+            {expandedExercise?.id === exercise.id && expandedExercise.level === 'brief' && (
+              <div className="p-4 border-b border-dark-700 bg-dark-800/50">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {(() => {
+                    const ex = exercisesData.exercises.find((e: any) => e.name === exercise.name);
+                    return ex ? (
+                      <>
+                        {ex.muscleGroups.slice(0, 2).map((m: string) => (
+                          <span key={m} className="text-xs px-2 py-0.5 bg-primary/20 text-primary rounded">{m}</span>
+                        ))}
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          ex.difficulty === 'beginner' ? 'bg-green-900 text-green-300' :
+                          ex.difficulty === 'intermediate' ? 'bg-yellow-900 text-yellow-300' :
+                          'bg-red-900 text-red-300'
+                        }`}>{ex.difficulty}</span>
+                      </>
+                    ) : null;
+                  })()}
+                </div>
+                <p className="text-gray-400 text-xs">{exercise.sets.length} sets × {exercise.sets[0]?.reps || 0} reps</p>
+              </div>
+            )}
+
+            {/* Exercise Details - Full (level: 'full') */}
+            {expandedExercise?.id === exercise.id && expandedExercise.level === 'full' && (
               <div className="p-4 border-b border-dark-700 bg-dark-800/50">
                 <ExerciseDetail exerciseName={exercise.name} compact />
               </div>
