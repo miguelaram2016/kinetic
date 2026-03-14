@@ -417,20 +417,8 @@ export default function WorkoutPage() {
                     key={set.id}
                     className={`${set.completed ? 'bg-green-500/10' : 'bg-dark-700/30'} rounded-xl p-3 transition-colors`}
                   >
-                    {/* Minimal view when hidden */}
-                    {hiddenSets[exercise.id] ? (
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-400">Set {setIndex + 1}: {set.weight}lbs × {set.reps} reps</span>
-                        <button
-                          onClick={() => handleSetComplete(exerciseIndex, setIndex)}
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                            set.completed ? 'bg-green-500 text-white' : 'bg-dark-700 text-gray-500 hover:bg-dark-600'
-                          }`}
-                        >
-                          {set.completed ? '✓' : setIndex + 1}
-                        </button>
-                      </div>
-                    ) : (
+                    {/* Sets hidden - only show when not hidden */}
+                    {!hiddenSets[exercise.id] && (
                     <div className="flex items-center justify-between mb-2 md:hidden">
                       <span className={`text-sm font-medium ${set.completed ? 'text-green-400' : 'text-gray-400'}`}>
                         Set {setIndex + 1}
