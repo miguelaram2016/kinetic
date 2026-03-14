@@ -26,6 +26,7 @@ export default function WorkoutPage() {
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [isPaused, setIsPaused] = useState(false);
+  const [hiddenSets, setHiddenSets] = useState<Record<string, boolean>>({});
   const startTimeRef = useRef<number | null>(null);
 
   // Load persisted start time from localStorage
@@ -416,7 +417,20 @@ export default function WorkoutPage() {
                     key={set.id}
                     className={`${set.completed ? 'bg-green-500/10' : 'bg-dark-700/30'} rounded-xl p-3 transition-colors`}
                   >
-                    {/* Mobile layout */}
+                    {/* Minimal view when hidden */}
+                    {hiddenSets[exercise.id] ? (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400">Set {setIndex + 1}: {set.weight}lbs × {set.reps} reps</span>
+                        <button
+                          onClick={() => handleSetComplete(exerciseIndex, setIndex)}
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                            set.completed ? 'bg-green-500 text-white' : 'bg-dark-700 text-gray-500 hover:bg-dark-600'
+                          }`}
+                        >
+                          {set.completed ? '✓' : setIndex + 1}
+                        </button>
+                      </div>
+                    ) : (
                     <div className="flex items-center justify-between mb-2 md:hidden">
                       <span className={`text-sm font-medium ${set.completed ? 'text-green-400' : 'text-gray-400'}`}>
                         Set {setIndex + 1}
@@ -438,8 +452,10 @@ export default function WorkoutPage() {
                         )}
                       </button>
                     </div>
+                    )}
                     
                     {/* Desktop layout */}
+                    {!hiddenSets[exercise.id] && (
                     <div className="hidden md:grid md:grid-cols-5 gap-2 items-center">
                       <div className="text-center">
                         <span className={`text-sm font-medium ${set.completed ? 'text-green-400' : 'text-gray-400'}`}>
@@ -484,8 +500,10 @@ export default function WorkoutPage() {
                         </button>
                       </div>
                     </div>
+                    )}
 
                     {/* Mobile inputs */}
+                    {!hiddenSets[exercise.id] && (
                     <div className="grid grid-cols-2 gap-2 md:hidden">
                       <div>
                         <label className="text-xs text-gray-500 mb-1 block">Weight</label>
@@ -506,8 +524,33 @@ export default function WorkoutPage() {
                         />
                       </div>
                     </div>
+                    )}
                   </div>
                 ))}
+                
+                {/* Set Management */}
+                <div className="flex gap-2 mt-3 pt-3 border-t border-dark-700">
+                  <button
+                    onClick={() => handleAddSet(exerciseIndex)}
+                    className="flex-1 py-2 bg-dark-700 hover:bg-dark-600 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    + Add Set
+                  </button>
+                  {exercise.sets.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveSet(exerciseIndex, exercise.sets.length - 1)}
+                      className="px-4 py-2 bg-dark-700 hover:bg-red-900/30 text-gray-400 hover:text-red-400 text-sm font-medium rounded-lg transition-colors"
+                    >
+                      - Remove
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setHiddenSets(prev => ({ ...prev, [exercise.id]: !prev[exercise.id] }))}
+                    className="px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-400 text-sm rounded-lg transition-colors"
+                  >
+                    {hiddenSets[exercise.id] ? 'Show' : 'Hide'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
