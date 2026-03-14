@@ -340,7 +340,7 @@ export default function WorkoutPage() {
 
       <div className="space-y-6">
         {workout.exercises.map((exercise, exerciseIndex) => (
-          <div key={exercise.id} className="bg-dark-800 rounded-2xl border border-dark-700 overflow-hidden">
+          <div key={exercise.id} className={`bg-dark-800 rounded-2xl border border-dark-700 overflow-hidden ${hiddenSets[exercise.id] ? 'py-2' : ''}`}>
             <div className="p-4 bg-dark-700/50 border-b border-dark-700">
               <div className="flex items-center justify-between">
                 <div>
