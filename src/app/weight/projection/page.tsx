@@ -74,7 +74,6 @@ export default function WeightProjectionPage() {
   const delta = start && last ? displayWeight(last.weightKg - start.weightKg) : 0;
 
   const setOverride = (value: string, key: number | string, scope: 'weekly' | 'daily') => {
-    const setter = scope === 'weekly' ? setWeeklyCalories : setPerDayCalories;
     // Keep blank overrides as fallback to the common daily calorie target.
     if (scope === 'weekly') {
       setWeeklyCalories(previous => {
@@ -280,7 +279,8 @@ export default function WeightProjectionPage() {
                       stroke="#9CA3AF" fontSize={12} width={60} />
                     <Tooltip labelFormatter={value => dateLabel(String(value))}
                       formatter={value => [`${format(displayWeight(Number(value)), 1)} ${weightUnit}`, 'Projected weight']}
-                      contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 12 }} />
+                      contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 12 }}
+                      labelStyle={{ color: '#e5e7eb' }} itemStyle={{ color: '#a5b4fc' }} />
                     <Line type="monotone" dataKey="weightKg" name="Projected weight"
                       stroke="#818cf8" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
                   </LineChart>
@@ -292,7 +292,7 @@ export default function WeightProjectionPage() {
                   <thead className="sticky top-0 bg-dark-700 text-gray-200">
                     <tr>
                       <th className="px-4 py-3">Date</th><th className="px-4 py-3">Projected weight</th>
-                      <th className="px-4 py-3">Calories</th><th className="px-4 py-3">TDEE</th>
+                      <th className="px-4 py-3">Prior-day calories</th><th className="px-4 py-3">TDEE</th>
                       <th className="px-4 py-3">BMI</th>
                     </tr>
                   </thead>
