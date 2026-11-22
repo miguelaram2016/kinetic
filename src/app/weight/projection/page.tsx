@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -39,15 +39,15 @@ function MetricCard({ name, value, detail }: { name: string; value: string; deta
 }
 
 export default function WeightProjectionPage() {
-  const today = new Date().toISOString().slice(0, 10);
   const [unit, setUnit] = useState<Unit>('imperial');
   const [heightCm, setHeightCm] = useState(180);
   const [weightKg, setWeightKg] = useState(90);
   const [age, setAge] = useState(30);
   const [sex, setSex] = useState<SexForEquation>('male');
   const [activity, setActivity] = useState<ActivityLevel>('moderate');
-  const [startDate, setStartDate] = useState(today);
-  const [endDate, setEndDate] = useState(addDays(today, 90));
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [datesReady, setDatesReady] = useState(false);
   const [calories, setCalories] = useState(2000);
   const [useCustomBmr, setUseCustomBmr] = useState(false);
   const [customBmr, setCustomBmr] = useState(1800);
@@ -55,6 +55,16 @@ export default function WeightProjectionPage() {
   const [weeklyCalories, setWeeklyCalories] = useState<Record<number, number>>({});
   const [perDayCalories, setPerDayCalories] = useState<Record<string, number>>({});
   const [view, setView] = useState<View>('graph');
+
+  // Set local dates only after mount so prerendered HTML never bakes in a stale
+  // UTC date or causes a hydration mismatch for visitors in other time zones.
+  useEffect(() => {
+    const now = new Date();
+    const localDate = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
+    setStartDate(localDate);
+    setEndDate(addDays(localDate, 90));
+    setDatesReady(true);
+  }, []);
 
   const settings: ProjectionSettings = {
     heightCm, initialWeightKg: weightKg, age, sex, activity,
@@ -91,6 +101,10 @@ export default function WeightProjectionPage() {
       });
     }
   };
+
+  if (!datesReady) {
+    return <div className="py-16 text-center text-gray-400">Preparing your projection…</div>;
+  }
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 pb-10">
