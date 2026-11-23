@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useWeight } from '@/lib/store';
 import WeightChart from '@/components/WeightChart';
 
@@ -43,6 +44,9 @@ export default function WeightPage() {
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-white">Weight Tracking</h1>
         <p className="text-gray-400 mt-1">Log and track your body weight over time</p>
+        <Link href="/weight/projection" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 transition-colors">
+          Open weight projection calculator <span aria-hidden="true">→</span>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
